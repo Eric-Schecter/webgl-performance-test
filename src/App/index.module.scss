@@ -1,0 +1,11 @@
+.root {
+  touch-action: none;
+  width: 100%;
+  height: 100vh;
+  background: radial-gradient(#fff,#283844);
+
+  & .canvas {
+    width: 100%;
+    height: 100%;
+  }
+}

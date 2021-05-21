@@ -1,0 +1,12 @@
+.selection {
+  position: fixed;
+  top: 0;
+  left: 0;
+  max-width: 300px;
+  background-color: transparent;
+  border: 1px solid black;
+  font-size: 1.5rem;
+  margin: 10px;
+  padding: 0.3em 0.1em;
+  cursor: pointer;
+}
