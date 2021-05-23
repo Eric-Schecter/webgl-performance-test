@@ -16,4 +16,9 @@
       background-color: lightgray;
     }
   }
+
+  & .isSelected{
+    background-color: dodgerblue;
+    color: white;
+  }
 }

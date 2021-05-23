@@ -75,6 +75,7 @@ export class GPUHandler {
     this.velocityUniforms.linkWidth = { value: 0 };
     this.velocityUniforms.nodeWidth = { value: 0 };
     this.velocityUniforms.nodeCount = { value: 0 };
+    this.velocityUniforms.is2d = { value: 0 };
     const error = this.gpuCompute.init();
     if (error !== null) {
       console.error(error);
@@ -94,5 +95,8 @@ export class GPUHandler {
   }
   public updatePoint = (i: number, x: number, y: number) => {
     (this.positionUniforms.pickedNode.value as Vector4).set(x, y, 0, i);
+  }
+  public updateView = (is2d:boolean) => {
+    this.velocityUniforms.is2d.value = is2d ? 1 : 0;
   }
 }

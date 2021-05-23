@@ -25,6 +25,7 @@ export class Viz {
   private picker: Picker;
   private pickingScene: Scene;
   private creator: PlayerCreator;
+  private is2d = true;
 
   constructor(canvas: HTMLCanvasElement) {
     this.renderer = new Renderer(canvas).instance;
@@ -34,7 +35,7 @@ export class Viz {
     this.composer = this.initComposer();
     this.creator = new PlayerCreator(this.scene, this.pickingScene, this.renderer);
     this.control = new OrbitControls(this.camera.instance, canvas);
-    // this.control.enableRotate = false;
+
     this.control.enableDamping = true;
     this.control.enablePan = false;
 
@@ -70,8 +71,6 @@ export class Viz {
     // this.camera.update();
     // this.composer.render();
     this.renderer.render(this.scene, this.camera.instance);
-
-
     resizeRendererToDisplaySize(this.renderer, this.camera.instance, this.composer);
   }
   private update = () => {
@@ -81,16 +80,17 @@ export class Viz {
     }
     requestAnimationFrame(this.update);
   }
-  public changeMode = (mode: string) => {
-    // this.player?.dispose();
-    // this.player = this.creator.create('force-directed-graph');
+  public changeMode = (is2d: boolean) => {
+    this.is2d = is2d;
+    this.control.enableRotate = !is2d;
+    this.player?.updateView(is2d);
     this.camera.init();
   }
   public changeType = (type: string) => {
     this.player?.dispose();
     this.player = this.creator.create(type);
     this.eventsHandler.player = this.player;
-    this.camera.init();
+    this.changeMode(this.is2d);
   }
   public unregister = () => {
     this.renderer.dispose();

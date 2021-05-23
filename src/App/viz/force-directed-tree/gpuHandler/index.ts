@@ -1,7 +1,7 @@
 import { GPUComputationRenderer, Variable } from "three/examples/jsm/misc/GPUComputationRenderer";
 import { IUniform, WebGLRenderer, Texture, DataTexture, RGBAFormat, FloatType, Vector4 } from "three";
 import { fragmentPos, fragmentVelocity } from "./shaders";
-import { Data, DataLink, DataNode } from "../data";
+import { DataLink, DataNode } from "../data";
 import { getTextureSize } from "../../../../shared";
 
 export class GPUHandler {
@@ -10,7 +10,7 @@ export class GPUHandler {
   private velocityVariable: Variable;
   private velocityUniforms: { [uniform: string]: IUniform<Texture | number | null> } = {};
   private positionUniforms: { [uniform: string]: IUniform<Texture | number | Vector4 | null> } = {};
-  constructor(data: Data, renderer: WebGLRenderer, private uniforms: { [uniform: string]: IUniform<Texture> }) {
+  constructor(data: any, renderer: WebGLRenderer, private uniforms: { [uniform: string]: IUniform<Texture> }) {
     const { links, nodes } = data;
     const nodeWidth = getTextureSize(nodes.length);
     this.gpuCompute = new GPUComputationRenderer(nodeWidth, nodeWidth, renderer);
@@ -34,7 +34,7 @@ export class GPUHandler {
     this.velocityUniforms.nodeCount.value = nodes.length;
 
     const nodesTexture = new DataTexture(new Float32Array(nodeWidth ** 2 * 4).fill(-1), nodeWidth, nodeWidth, RGBAFormat, FloatType);
-    nodes.forEach(({ group }, i) => nodesTexture.image.data.set([group, 0, 0, i], i * 4));
+    nodes.forEach((d, i) => nodesTexture.image.data.set([0, 0, 0, i], i * 4));
     this.uniforms.textureNodes.value = nodesTexture;
     this.positionUniforms.textureNodes.value = nodesTexture;
     this.velocityUniforms.textureNodes.value = nodesTexture;

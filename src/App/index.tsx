@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState, RefObject } from 'react';
 import styles from './index.module.scss';
 import { Viz } from './viz';
-// import { Mode } from './Mode';
+import { Mode } from './Mode';
 import { Selection } from './Selection';
 
 const useCreateViz = (ref: RefObject<HTMLCanvasElement>) => {
@@ -18,8 +18,8 @@ const useCreateViz = (ref: RefObject<HTMLCanvasElement>) => {
 export const App = () => {
   const ref = useRef<HTMLCanvasElement>(null);
   const viz = useCreateViz(ref);
-  // const changeMode = (mode: string) => viz?.changeMode(mode)
-  const changeType = (mode: string) => viz?.changeType(mode)
+  const changeMode = (mode: boolean) => viz?.changeMode(mode);
+  const changeType = (mode: string) => viz?.changeType(mode);
 
   useEffect(() => {
     if (!viz) { return }
@@ -27,7 +27,7 @@ export const App = () => {
 
   return <div className={styles.root}>
     <Selection cb={changeType} />
-    {/* <Mode cb={changeMode} /> */}
+    <Mode cb={changeMode} />
     <canvas ref={ref} className={styles.canvas} />
   </div>
 }

@@ -24,5 +24,6 @@ export type vec3 = [number, number, number];
 export interface Player {
   update: (time: number) => void;
   updatePoint: (i: number, x: number, y: number) => void;
+  updateView: (is2d: boolean) => void;
   dispose: () => void;
 }

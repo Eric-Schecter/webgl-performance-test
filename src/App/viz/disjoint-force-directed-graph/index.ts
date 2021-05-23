@@ -34,6 +34,9 @@ export class DisjointForceDirectedGraph implements Player {
   public updatePoint = (i: number, x: number, y: number) => {
     this.gpuHandler?.updatePoint(i, x, y);
   }
+  public updateView = (is2d:boolean) =>{
+    this.gpuHandler?.updateView(is2d)
+  }
   public dispose = () => {
     this.nodes.dispose();
     this.edges.dispose();

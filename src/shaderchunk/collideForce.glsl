@@ -6,9 +6,9 @@ const float strength=10.;
 vec4 collideForce(vec4 v,vec4 p,float nodeWidth,vec4 params,sampler2D textureNodes){
   vec2 map=vec2(nodeWidth);
   float group=params.x;
-  for(float r=0.;r<nodeWidth;r++){
-    for(float c=0.;c<nodeWidth;c++){
-      vec2 ref=vec2(r+.5,c+.5)/map;
+  for(float r=0.5;r<nodeWidth;r++){
+    for(float c=0.5;c<nodeWidth;c++){
+      vec2 ref=vec2(r,c)/map;
       vec4 neighbour=texture(texturePosition,ref);
       vec4 neighbourParams=texture(textureNodes,ref);
       float dis=distance(p,neighbour);

@@ -1,12 +1,13 @@
 import { Scene, UniformsUtils, IUniform, WebGLRenderer } from "three";
-import { InitData, Player } from "../../../shared/types";
+import { Player } from "../../../shared/types";
 import { Nodes } from "./nodes";
 import { Edges } from "./edges";
 import { Data } from "./data";
 import { GPUHandler } from "./gpuHandler";
-import data from './data.json';
+import data from './data/data.json';
+import { TreeNodeData } from "./types";
 
-export class ForceDirectedGraph implements Player {
+export class ForceDirectedTree implements Player {
   private nodes: Nodes;
   private edges: Edges;
   private gpuHandler?: GPUHandler;
@@ -21,7 +22,7 @@ export class ForceDirectedGraph implements Player {
     this.edges = new Edges(scene, this.uniforms);
     this.setdata(data);
   }
-  private setdata(initData: InitData) {
+  private setdata(initData: TreeNodeData) {
     const data = new Data(initData);
     const { nodes, links } = data;
     this.gpuHandler = new GPUHandler(data, this.renderer, this.uniforms);

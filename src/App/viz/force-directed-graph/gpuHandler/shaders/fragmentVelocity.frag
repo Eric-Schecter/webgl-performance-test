@@ -2,6 +2,7 @@ uniform float uTime;
 uniform float linkWidth;
 uniform float nodeWidth;
 uniform float nodeCount;
+uniform float is2d;
 uniform sampler2D textureLinks;
 uniform sampler2D textureNodes;
 
@@ -19,6 +20,11 @@ vec4 limitVelocity(vec4 v){
   return v;
 }
 
+vec4 zto0(vec4 v,vec4 p){
+  v.z -= p.z;
+  return v;
+}
+
 void main(){
   vec2 uv=gl_FragCoord.xy/resolution.xy;
   vec4 p=texture(texturePosition,uv);
@@ -28,11 +34,10 @@ void main(){
   v=collideForce(v,p,nodeWidth,node,textureNodes);
   v=linkForce(v,p,nodeID,linkWidth,nodeWidth,textureLinks);
   v=centerForce(v,p,nodeWidth,nodeCount,center);
-
+  if(is2d==1.){
+    v = zto0(v,p);
+  }
   v = limitVelocity(v);
   v.xyz*=.1;
-  if(length(v.xyz)<0.1){
-    v*=0.;
-  }
   gl_FragColor=vec4(v);
 }
