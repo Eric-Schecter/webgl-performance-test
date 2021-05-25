@@ -1,8 +1,9 @@
-import React, { useRef, useEffect, useState, RefObject } from 'react';
+import React, { useRef, useEffect, useState, RefObject, useCallback } from 'react';
 import styles from './index.module.scss';
 import { Viz } from './viz';
-import { Mode } from './Mode';
+import { ViewMode } from './ViewMode';
 import { Selection } from './Selection';
+import { DarkMode } from './DarkMode';
 
 const useCreateViz = (ref: RefObject<HTMLCanvasElement>) => {
   const [viz, setViz] = useState<Viz>();
@@ -18,16 +19,19 @@ const useCreateViz = (ref: RefObject<HTMLCanvasElement>) => {
 export const App = () => {
   const ref = useRef<HTMLCanvasElement>(null);
   const viz = useCreateViz(ref);
-  const changeMode = (mode: boolean) => viz?.changeMode(mode);
-  const changeType = (mode: string) => viz?.changeType(mode);
+  const changeMode = useCallback((mode: boolean) => viz?.changeMode(mode), [viz]);
+  const changeType = useCallback((mode: string) => viz?.changeType(mode), [viz]);
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   useEffect(() => {
     if (!viz) { return }
-  }, [viz])
+    viz.changeDarkMode(isDarkMode);
+  }, [isDarkMode, viz])
 
   return <div className={styles.root}>
-    <Selection cb={changeType} />
-    <Mode cb={changeMode} />
+    <Selection cb={changeType} isDark={isDarkMode} />
+    <DarkMode cb={setIsDarkMode} isDark={isDarkMode}/>
+    <ViewMode cb={changeMode} isDark={isDarkMode} />
     <canvas ref={ref} className={styles.canvas} />
   </div>
 }

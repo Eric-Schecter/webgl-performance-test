@@ -21,9 +21,10 @@ export type Pos = {
 
 export type vec3 = [number, number, number];
 
-export interface Player {
+export interface Playable {
   update: (time: number) => void;
   updatePoint: (i: number, x: number, y: number) => void;
   updateView: (is2d: boolean) => void;
+  updateDarkMode: (isDark: boolean) => void;
   dispose: () => void;
 }

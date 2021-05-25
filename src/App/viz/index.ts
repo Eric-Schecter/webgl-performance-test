@@ -9,7 +9,7 @@ import { Renderer } from './renderer';
 import { MyScene } from './scene';
 import { EventsHandler } from './eventsHandler';
 import { Picker } from './picker';
-import { Player } from '../../shared';
+import { Playable } from '../../shared';
 import { PlayerCreator } from './creator';
 
 export class Viz {
@@ -19,13 +19,14 @@ export class Viz {
   private composer: EffectComposer;
   private clock = new Clock();
   private preTime = 0;
-  private player: Player | null = null;
+  private player: Playable | null = null;
   private control: OrbitControls;
   private eventsHandler: EventsHandler;
   private picker: Picker;
   private pickingScene: Scene;
   private creator: PlayerCreator;
   private is2d = true;
+  private isDark = false;
 
   constructor(canvas: HTMLCanvasElement) {
     this.renderer = new Renderer(canvas).instance;
@@ -34,21 +35,23 @@ export class Viz {
     this.camera = new MyCamera(canvas);
     this.composer = this.initComposer();
     this.creator = new PlayerCreator(this.scene, this.pickingScene, this.renderer);
-    this.control = new OrbitControls(this.camera.instance, canvas);
-
-    this.control.enableDamping = true;
-    this.control.enablePan = false;
-
+    this.control = this.createControl(canvas);
     this.picker = new Picker(this.renderer, this.camera.instance, this.pickingScene);
     this.eventsHandler = new EventsHandler(canvas, this.picker, this.control, this.camera.instance);
     this.update();
+  }
+  private createControl = (canvas: HTMLCanvasElement) => {
+    const control = new OrbitControls(this.camera.instance, canvas);
+    control.enableDamping = true;
+    control.enablePan = false;
+    return control;
   }
   private initComposer = () => {
     const renderScene = new RenderPass(this.scene, this.camera.instance);
     const bloomPass = new UnrealBloomPass(new Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
     bloomPass.threshold = 0;
     bloomPass.strength = 1.5;
-    bloomPass.radius = 0;
+    bloomPass.radius = 1;
     const composer = new EffectComposer(this.renderer);
     composer.addPass(renderScene);
     composer.addPass(bloomPass);
@@ -68,9 +71,11 @@ export class Viz {
       this.player.update(time);
       this.picker.update(this.eventsHandler.mouseNormalized, this.player);
     }
-    // this.camera.update();
-    // this.composer.render();
-    this.renderer.render(this.scene, this.camera.instance);
+    if (this.isDark) {
+      this.composer.render();
+    } else {
+      this.renderer.render(this.scene, this.camera.instance);
+    }
     resizeRendererToDisplaySize(this.renderer, this.camera.instance, this.composer);
   }
   private update = () => {
@@ -91,6 +96,11 @@ export class Viz {
     this.player = this.creator.create(type);
     this.eventsHandler.player = this.player;
     this.changeMode(this.is2d);
+    this.player?.updateDarkMode(this.isDark);
+  }
+  public changeDarkMode = (isDark: boolean) => {
+    this.isDark = isDark;
+    this.player?.updateDarkMode(isDark);
   }
   public unregister = () => {
     this.renderer.dispose();

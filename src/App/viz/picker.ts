@@ -1,5 +1,5 @@
 import { Scene, WebGLRenderTarget, WebGLRenderer, PerspectiveCamera, Vector3 } from "three";
-import { Player } from "../../shared";
+import { Playable } from "../../shared";
 
 export class Picker {
   private renderTarget: WebGLRenderTarget;
@@ -39,7 +39,7 @@ export class Picker {
   public init = () => {
     this.id = -1;
   }
-  public update = (mouse: Vector3, player: Player) => {
+  public update = (mouse: Vector3, player: Playable) => {
     if (this.id === -1) { return }
     const pos = this.screen2world(mouse);
     player.updatePoint(this.id, pos.x, pos.y);

@@ -1,44 +1,41 @@
+
+
 import { Scene, UniformsUtils, IUniform, WebGLRenderer } from "three";
-import { InitData, Player } from "../../../shared/types";
-import { Nodes } from "./nodes";
-import { Edges } from "./edges";
+import { Playable } from "../../../shared/types";
 import { Data } from "./data";
 import { GPUHandler } from "./gpuHandler";
-import data from './data.json';
+import rawdata from './data/data.json';
+import { Visualizer } from "./visualizer";
 
-export class DisjointForceDirectedGraph implements Player {
-  private nodes: Nodes;
-  private edges: Edges;
-  private gpuHandler?: GPUHandler;
+export class DisjointForceDirectedGraph implements Playable {
+  private visualizer:Visualizer;
+  private gpuHandler: GPUHandler;
   private uniforms: { [uniform: string]: IUniform<any> };
-  constructor(private scene: Scene, pickingScene: Scene, private renderer: WebGLRenderer) {
+  constructor(scene: Scene, pickingScene: Scene, private renderer: WebGLRenderer) {
     this.uniforms = UniformsUtils.merge([
       { texturePosition: { value: null } },
       { textureVelocity: { value: null } },
       { textureNodes: { value: null } },
+      { isDark: { value: 0 } }
     ]);
-    this.nodes = new Nodes(scene, pickingScene, this.uniforms);
-    this.edges = new Edges(scene, this.uniforms);
-    this.setdata(data);
-  }
-  private setdata(initData: InitData) {
-    const data = new Data(initData);
-    const { nodes, links } = data;
+    const data = new Data(rawdata);
+    this.visualizer = new Visualizer(data,scene,pickingScene,this.uniforms);
     this.gpuHandler = new GPUHandler(data, this.renderer, this.uniforms);
-    this.nodes.init(nodes);
-    this.edges.init(links, this.nodes.nodeReference);
   }
   public update = (time: number) => {
-    this.gpuHandler?.update(time);
+    this.gpuHandler.update(time);
   }
   public updatePoint = (i: number, x: number, y: number) => {
-    this.gpuHandler?.updatePoint(i, x, y);
+    this.gpuHandler.updatePoint(i, x, y);
   }
   public updateView = (is2d:boolean) =>{
-    this.gpuHandler?.updateView(is2d)
+    this.gpuHandler.updateView(is2d)
+  }
+  public updateDarkMode = (isDark: boolean) => {
+    this.uniforms.isDark.value = isDark ? 1. : 0.
+    this.visualizer.update();
   }
   public dispose = () => {
-    this.nodes.dispose();
-    this.edges.dispose();
+    this.visualizer.dispose();
   }
 }

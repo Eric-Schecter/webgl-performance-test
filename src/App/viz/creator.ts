@@ -1,10 +1,10 @@
 import { Scene, WebGLRenderer } from "three";
 import { ForceDirectedGraph } from "./force-directed-graph";
-import { Player } from "../../shared";
+import { Playable } from "../../shared";
 import { DisjointForceDirectedGraph } from "./disjoint-force-directed-graph";
 import { ForceDirectedTree } from "./force-directed-tree";
 
-type PlayerNewable = { new(scene: Scene, pickingScene: Scene, renderer: WebGLRenderer): Player }
+type PlayerNewable = { new(scene: Scene, pickingScene: Scene, renderer: WebGLRenderer): Playable }
 
 export const list = {
   'force-directed-graph': ForceDirectedGraph,

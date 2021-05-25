@@ -1,7 +1,7 @@
 import { Vector3, PerspectiveCamera } from "three";
 import { Picker } from "./picker";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { Player } from "../../shared";
+import { Playable } from "../../shared";
 
 export class EventsHandler {
   private startPosMouse: Vector3;
@@ -9,7 +9,7 @@ export class EventsHandler {
   private _mouse: Vector3;
   private _mouseNormalized: Vector3;
   private _isDown = false;
-  private _player: Player | null = null;
+  private _player: Playable | null = null;
   constructor(private canvas: HTMLCanvasElement, private picker: Picker,
     private control: OrbitControls, private camera: PerspectiveCamera) {
     this._mouse = new Vector3(-10000, -10000, -10000);
@@ -94,7 +94,7 @@ export class EventsHandler {
     this._mouseNormalized.y = -(this.mouse.y / this.canvas.clientHeight) * 2 + 1;
     return this._mouseNormalized;
   }
-  public set player(player: Player | null) {
+  public set player(player: Playable | null) {
     this._player = player;
   }
 }

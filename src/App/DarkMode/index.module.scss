@@ -1,0 +1,17 @@
+.darkmode{
+  font-size: 2rem;
+  margin: 30px 50%;
+  transform: translate(-50%,-50%);
+  position: absolute;
+  transition: background-color 0.1s;
+  padding: 5px 10px;
+  cursor: pointer;
+
+  &:hover{
+    background-color: lightgray;
+  }
+}
+
+.isDark{
+  background-color: white;
+}
