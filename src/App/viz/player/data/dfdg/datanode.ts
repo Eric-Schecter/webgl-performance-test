@@ -1,5 +1,5 @@
 import { MovableNode } from "./movablenode";
-import { Node } from "../../../../../shared";
+import { Node } from "./types";
 
 export class DataNode extends MovableNode {
   private initRaidus = 10;

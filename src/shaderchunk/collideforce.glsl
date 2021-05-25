@@ -5,7 +5,7 @@ const float strength=10.;
 
 vec4 collideForce(vec4 v,vec4 p,float nodeWidth,vec4 params,sampler2D textureNodes){
   vec2 map=vec2(nodeWidth);
-  float group=params.x;
+  float group=params.y;
   for(float r=0.;r<nodeWidth;r++){
     for(float c=0.;c<nodeWidth;c++){
       vec2 ref=vec2(r+.5,c+.5)/map;
@@ -14,7 +14,7 @@ vec4 collideForce(vec4 v,vec4 p,float nodeWidth,vec4 params,sampler2D textureNod
       float dis=distance(p,neighbour);
       if(dis<disMax&&dis!=0.){
         vec3 direction=normalize(p.xyz-neighbour.xyz);
-        float ratio=group==neighbourParams.x?6.:10.;
+        float ratio=group==neighbourParams.y?6.:10.;
         float dis2=pow(dis/ratio,2.);
         vec3 force=direction*strength/dis2;
         v.xyz+=force.xyz;

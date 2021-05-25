@@ -11,7 +11,7 @@ export class Player {
   private gpuHandler?: GPU;
   private uniforms: { [uniform: string]: IUniform<any> };
   private data: any;
-  private creator: PlayerCreator;
+  private creator = PlayerCreator;
   constructor(private scene: Scene, private pickingScene: Scene, private renderer: WebGLRenderer) {
     this.uniforms = UniformsUtils.merge([
       { texturePosition: { value: null } },
@@ -19,7 +19,6 @@ export class Player {
       { textureNodes: { value: null } },
       { isDark: { value: 0 } }
     ]);
-    this.creator = new PlayerCreator(this);
   }
   public update = (time: number) => {
     this.gpuHandler?.update(time);
@@ -50,6 +49,6 @@ export class Player {
     return this;
   }
   public create = (type: string) => {
-    this.creator.create(type);
+    this.creator.create(type, this);
   }
 }

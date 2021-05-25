@@ -4,23 +4,25 @@ import { DataNode } from "../../data/fdt";
 import { Pos, getTextureSize, vec3 } from "../../../../../shared";
 
 export class Nodes {
-  private nodes: Points;
-  private pickingNodes: Points;
+  private nodes?: Points;
+  private pickingNodes?: Points;
   private _nodeReference: Map<number, Pos>;
-  private colorMap: Map<number, vec3>;
-  constructor(nodes: DataNode[], private scene: Scene, private pickingScene: Scene,
+  private colorMap: Map<number | string, vec3>;
+  constructor(private datanodes: DataNode[], private scene: Scene, private pickingScene: Scene,
     private uniforms: { [uniform: string]: IUniform<Texture> }) {
     this._nodeReference = new Map();
     this.colorMap = new Map();
-    const length = nodes.length;
+  }
+  public init = () => {
+    const length = this.datanodes.length;
     const size = getTextureSize(length);
     const nodesBufferLength = size ** 2 * 3;
     const reference = this.setReference(size);
     const pos = new BufferAttribute(new Float32Array(nodesBufferLength), 3);
-    nodes.forEach(({ x, y, z }, i) => pos.setXYZ(i, x, y, z));
-    this.nodes = this.createNodes(pos, this.createNodesColor(nodesBufferLength, nodes), reference);
+    this.datanodes.forEach(({ x, y, z }, i) => pos.setXYZ(i, x, y, z));
+    this.nodes = this.createNodes(pos, this.createNodesColor(nodesBufferLength, this.datanodes), reference);
     this.scene.add(this.nodes);
-    this.pickingNodes = this.createNodes(pos, this.createPickingNodesColor(nodesBufferLength, nodes), reference);
+    this.pickingNodes = this.createNodes(pos, this.createPickingNodesColor(nodesBufferLength, this.datanodes), reference);
     this.pickingScene.add(this.pickingNodes);
   }
   private setReference = (size: number) => {
@@ -51,7 +53,7 @@ export class Nodes {
     points.renderOrder = 9999; // set points always on top
     return points;
   }
-  protected geneNodeColor = (n: number) => {
+  protected geneNodeColor = (n: number | string) => {
     if (!this.colorMap.has(n)) {
       this.colorMap.set(n, [Math.random(), Math.random(), Math.random()]);
     }
@@ -60,10 +62,13 @@ export class Nodes {
   private genePickingNodeColor = (i: number) => {
     return new Color().setHex(i + 1);
   }
+  protected getProperty = (n: any): any => {
+    return Math.random();
+  }
   protected createNodesColor = (size: number, nodes: any[]) => {
     const colorArr = new Float32Array(size);
     for (let i = 0; i < nodes.length; i++) {
-      const [r, g, b] = this.geneNodeColor(nodes[i].depth);
+      const [r, g, b] = this.geneNodeColor(this.getProperty(nodes[i]));
       colorArr[i * 3] = r;
       colorArr[i * 3 + 1] = g;
       colorArr[i * 3 + 2] = b;

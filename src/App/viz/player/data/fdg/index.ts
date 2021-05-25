@@ -1,4 +1,4 @@
-import { InitData } from "../../../../../shared";
+import { InitData } from "./types";
 import { DataNode } from "./datanode";
 import { DataLink } from "./datalink";
 

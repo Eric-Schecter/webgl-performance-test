@@ -1,6 +1,6 @@
 import { DataNode } from "./datanode";
 import { MovableNode } from "./movablenode";
-import { Link } from "../../../../../shared";
+import { Link } from "./types";
 
 export class DataLink {
   private _source: MovableNode;

@@ -1,21 +1,13 @@
+import { Scene, IUniform, Texture } from "three";
 import { Player } from "..";
-import { Data, DataNode } from "../data/fdt";
+import { Data } from "../data/fdt";
 import rawdata from '../data/fdt/data.json';
 import { GPUHandler } from "../gpuHandler";
 import { Nodes, Edges, Visualizer } from "../graph";
-import { Scene, IUniform, Texture } from "three";
-
 
 class NodesFDT extends Nodes {
-  protected createNodesColor = (size: number, nodes: DataNode[]) => {
-    const colorArr = new Float32Array(size);
-    for (let i = 0; i < nodes.length; i++) {
-      const [r, g, b] = this.geneNodeColor(nodes[i].depth);
-      colorArr[i * 3] = r;
-      colorArr[i * 3 + 1] = g;
-      colorArr[i * 3 + 2] = b;
-    }
-    return colorArr;
+  protected getProperty = (n: { depth: number }) => {
+    return n.depth;
   }
 }
 
@@ -24,6 +16,7 @@ class VizFDT extends Visualizer {
     super();
     const { nodes, links } = data;
     this.nodes = new NodesFDT(nodes, scene, pickingScene, uniforms);
+    this.nodes.init();
     this.edges = new Edges(links, this.nodes.nodeReference, scene, uniforms);
   }
 }

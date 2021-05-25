@@ -34,7 +34,7 @@ export class GPUHandler {
     this.velocityUniforms.nodeCount.value = nodes.length;
 
     const nodesTexture = new DataTexture(new Float32Array(nodeWidth ** 2 * 4).fill(-1), nodeWidth, nodeWidth, RGBAFormat, FloatType);
-    nodes.forEach(({height}, i) => nodesTexture.image.data.set([height || 1, 0, 0, i], i * 4));
+    nodes.forEach(({height,group}, i) => nodesTexture.image.data.set([height || 1, group || 0, 0, i], i * 4));
     this.uniforms.textureNodes.value = nodesTexture;
     this.positionUniforms.textureNodes.value = nodesTexture;
     this.velocityUniforms.textureNodes.value = nodesTexture;

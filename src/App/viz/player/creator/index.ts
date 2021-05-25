@@ -10,11 +10,10 @@ export const table: { [prop: string]: (player: Player) => void } = {
 }
 
 export class PlayerCreator {
-  constructor(private player: Player) { }
-  public create = (type: string) => {
+  public static create = (type: string, player: Player) => {
     if (type in table) {
       const creator = table[type];
-      creator(this.player);
+      creator(player);
     }
   }
 }
