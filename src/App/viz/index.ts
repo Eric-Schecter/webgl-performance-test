@@ -9,22 +9,20 @@ import { Renderer } from './renderer';
 import { MyScene } from './scene';
 import { EventsHandler } from './eventsHandler';
 import { Picker } from './picker';
-import { Playable } from '../../shared';
-import { PlayerCreator } from './creator';
+import { Player } from './player';
 
 export class Viz {
   private scene: Scene;
   private camera: MyCamera;
   private renderer: WebGLRenderer;
   private composer: EffectComposer;
-  private clock = new Clock();
-  private preTime = 0;
-  private player: Playable | null = null;
+  private player: Player;
   private control: OrbitControls;
   private eventsHandler: EventsHandler;
   private picker: Picker;
   private pickingScene: Scene;
-  private creator: PlayerCreator;
+  private clock = new Clock();
+  private preTime = 0;
   private is2d = true;
   private isDark = false;
 
@@ -34,10 +32,10 @@ export class Viz {
     this.pickingScene = new MyScene('black').instance;
     this.camera = new MyCamera(canvas);
     this.composer = this.initComposer();
-    this.creator = new PlayerCreator(this.scene, this.pickingScene, this.renderer);
+    this.player = new Player(this.scene, this.pickingScene, this.renderer);
     this.control = this.createControl(canvas);
     this.picker = new Picker(this.renderer, this.camera.instance, this.pickingScene);
-    this.eventsHandler = new EventsHandler(canvas, this.picker, this.control, this.camera.instance);
+    this.eventsHandler = new EventsHandler(canvas, this.picker, this.control, this.camera.instance,this.player);
     this.update();
   }
   private createControl = (canvas: HTMLCanvasElement) => {
@@ -67,10 +65,8 @@ export class Viz {
     return false;
   }
   private draw = (time: number) => {
-    if (this.player) {
-      this.player.update(time);
-      this.picker.update(this.eventsHandler.mouseNormalized, this.player);
-    }
+    this.player.update(time);
+    this.picker.update(this.eventsHandler.mouseNormalized, this.player);
     if (this.isDark) {
       this.composer.render();
     } else {
@@ -88,22 +84,21 @@ export class Viz {
   public changeMode = (is2d: boolean) => {
     this.is2d = is2d;
     this.control.enableRotate = !is2d;
-    this.player?.updateView(is2d);
+    this.player.updateView(is2d);
     this.camera.init();
   }
   public changeType = (type: string) => {
-    this.player?.dispose();
-    this.player = this.creator.create(type);
-    this.eventsHandler.player = this.player;
+    this.player.dispose();
+    this.player.create(type);
     this.changeMode(this.is2d);
-    this.player?.updateDarkMode(this.isDark);
+    this.player.updateDarkMode(this.isDark);
   }
   public changeDarkMode = (isDark: boolean) => {
     this.isDark = isDark;
-    this.player?.updateDarkMode(isDark);
+    this.player.updateDarkMode(isDark);
   }
   public unregister = () => {
     this.renderer.dispose();
-    this.player?.dispose();
+    this.player.dispose();
   }
 }

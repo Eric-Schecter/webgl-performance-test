@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import styles from './index.module.scss';
-import { list } from '../viz/creator';
+import { table } from '../viz/player/creator';
 
 type Props = {
   cb: (state: string) => void;
   isDark: boolean;
 }
 
-const data = Object.keys(list);
+const list = Object.keys(table);
 
 export const Selection = ({ cb, isDark }: Props) => {
-  const [state, setState] = useState(data[0]);
+  const [state, setState] = useState(list[0]);
   useEffect(() => {
     cb(state);
   }, [state, cb])
@@ -21,6 +21,6 @@ export const Selection = ({ cb, isDark }: Props) => {
     className={`${styles.selection} ${isDark ? styles.isDark : ''}`}
     value={state}
     onChange={change}>
-    {data.map(d => <option key={d}>{d}</option>)}
+    {list.map(d => <option key={d}>{d}</option>)}
   </select>
 }

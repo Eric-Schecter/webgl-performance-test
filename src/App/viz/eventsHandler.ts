@@ -1,7 +1,7 @@
 import { Vector3, PerspectiveCamera } from "three";
 import { Picker } from "./picker";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { Playable } from "../../shared";
+import { Player } from "./player";
 
 export class EventsHandler {
   private startPosMouse: Vector3;
@@ -9,9 +9,8 @@ export class EventsHandler {
   private _mouse: Vector3;
   private _mouseNormalized: Vector3;
   private _isDown = false;
-  private _player: Playable | null = null;
   constructor(private canvas: HTMLCanvasElement, private picker: Picker,
-    private control: OrbitControls, private camera: PerspectiveCamera) {
+    private control: OrbitControls, private camera: PerspectiveCamera,private player:Player) {
     this._mouse = new Vector3(-10000, -10000, -10000);
     this._mouseNormalized = this._mouse.clone();
     this.startPosMouse = this._mouse.clone();
@@ -63,7 +62,7 @@ export class EventsHandler {
     this._mouse.y = -10000;
     this.picker.init();
     this.control.enabled = true;
-    this._player?.updatePoint(-1, 0, 0);
+    this.player.updatePoint(-1, 0, 0);
 
     window.removeEventListener('pointermove', this.mousemove);
     window.removeEventListener('pointerup', this.up);
@@ -93,8 +92,5 @@ export class EventsHandler {
     this._mouseNormalized.x = this.mouse.x / this.canvas.clientWidth * 2 - 1;
     this._mouseNormalized.y = -(this.mouse.y / this.canvas.clientHeight) * 2 + 1;
     return this._mouseNormalized;
-  }
-  public set player(player: Playable | null) {
-    this._player = player;
   }
 }

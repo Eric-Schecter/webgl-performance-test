@@ -20,25 +20,25 @@ NodeParams getNodePos(float id,vec2 map,float length,sampler2D texturePosition,s
 }
 
 vec4 forceByTargetNode(vec4 v,vec4 p,vec4 link,NodeParams params){
-  vec3 vf=params.p.xyz + params.v.xyz - p.xyz - v.xyz;
+  vec3 vf=params.p.xyz+params.v.xyz-p.xyz-v.xyz;
   float len=getLength(vf,link);
-  v.xyz+=vf * len * (1.-link.z);
+  v.xyz+=vf*len*(1.-link.z);
   return v;
 }
 
 vec4 forceBySourceNode(vec4 v,vec4 p,vec4 link,NodeParams params){
-  vec3 vf=p.xyz + v.xyz - params.p.xyz - params.v.xyz;
+  vec3 vf=p.xyz+v.xyz-params.p.xyz-params.v.xyz;
   float len=getLength(vf,link);
-  v.xyz-=vf * len * link.z;
+  v.xyz-=vf*len*link.z;
   return v;
 }
 
 vec4 linkForce(vec4 v,vec4 p,float nodeID,float linkWidth,float nodeWidth,sampler2D textureLinks){
   vec2 data=vec2(linkWidth);
   vec2 map=vec2(nodeWidth);
-  for(float r=0.5;r<linkWidth;r++){
-    for(float c=0.5;c<linkWidth;c++){
-      vec2 ref=vec2(r,c)/data;
+  for(float r=0.;r<linkWidth;r++){
+    for(float c=0.;c<linkWidth;c++){
+      vec2 ref=vec2(r+.5,c+.5)/data;
       vec4 link=texture(textureLinks,ref);
       float sourceID=link.x;
       float targetID=link.y;
