@@ -1,13 +1,16 @@
-<!-- <p align="center">
-  <img src="./screenshot/profile.jpg">
-</p> -->
+<p align="center">
+  <img src="./screenshot/profile1.jpg">
+</p>
+<p align="center">
+  <img src="./screenshot/profile2.jpg">
+</p>
 
 ## About The Project
-A data visualizer.  
+A data visualizer aims to support smooth interaction with big data.  
 
 ## Get Started
-<!-- #### Run Online   
-[https://music-visualizer-project.netlify.app](https://music-visualizer-project.netlify.app)  -->
+#### Run Online   
+[https://data-visualizer-project.netlify.app](https://data-visualizer-project.netlify.app) 
 
 #### Run locally
 1. Clone the repo  
@@ -35,4 +38,4 @@ This project is licensed under [![License: MIT](https://img.shields.io/badge/Lic
 * Email:[eric199002@icloud.com](eric199002@icloud.com)
 * Twitter:[https://twitter.com/nikoniko600](https://twitter.com/nikoniko600)
 * Repo:[https://github.com/Eric-Schecter/data-visualizer](https://github.com/Eric-Schecter/data-visualizer)
-<!-- * App:[https://music-visualizer-project.netlify.app](https://music-visualizer-project.netlify.app)  -->
+* App:[https://data-visualizer-project.netlify.app](https://data-visualizer-project.netlify.app) 
