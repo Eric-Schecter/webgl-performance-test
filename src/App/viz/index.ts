@@ -9,6 +9,7 @@ import { MyScene } from './scene';
 import { EventsHandler } from './eventsHandler';
 import { Picker } from './picker';
 import { Player } from './player';
+import { MyStats } from './stats';
 
 export class Viz {
   private scene: Scene;
@@ -19,8 +20,8 @@ export class Viz {
   private eventsHandler: EventsHandler;
   private picker: Picker;
   private pickingScene: Scene;
+  private stats: MyStats;
   private clock = new Clock();
-  private preTime = 0;
   private is2d = true;
   private isDark = false;
 
@@ -33,6 +34,7 @@ export class Viz {
     this.player = new Player(this.scene, this.pickingScene, this.renderer);
     this.picker = new Picker(this.renderer, this.camera.instance, this.pickingScene);
     this.eventsHandler = new EventsHandler(canvas, this.picker, this.camera, this.player);
+    this.stats = new MyStats(canvas);
     this.update();
   }
   private initComposer = () => {
@@ -46,15 +48,6 @@ export class Viz {
     composer.addPass(bloomPass);
     return composer;
   }
-  private needRender = (time: number) => {
-    const fpsInterval = 1 / 60;
-    const elapsed = time - this.preTime;
-    if (elapsed > fpsInterval) {
-      this.preTime = time - (elapsed % fpsInterval);
-      return true;
-    }
-    return false;
-  }
   private draw = (time: number) => {
     this.player.update(time);
     this.picker.update(this.eventsHandler.mouseNormalized, this.player);
@@ -66,10 +59,9 @@ export class Viz {
     resizeRendererToDisplaySize(this.renderer, this.camera.instance, this.composer);
   }
   private update = () => {
+    this.stats.update();
     const time = this.clock.getElapsedTime();
-    if (this.needRender(time)) {
-      this.draw(time);
-    }
+    this.draw(time);
     requestAnimationFrame(this.update);
   }
   public changeMode = (is2d: boolean) => {
