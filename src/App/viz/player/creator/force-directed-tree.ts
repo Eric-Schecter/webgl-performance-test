@@ -1,29 +1,29 @@
 import { Scene, IUniform, Texture } from "three";
 import { Player } from "..";
-import { Data } from "../data/dfdg";
-import rawdata from '../data/dfdg/data.json';
+import { Data } from "../data/force-directed-tree";
+import rawdata from '../data/force-directed-tree/data.json';
 import { GPUHandler } from "../gpuHandler";
 import { Nodes, Edges, Visualizer } from "../graph";
 
-class NodesDFDG extends Nodes {
-  protected getProperty = (n: { group: string }) => {
-    return n.group;
+class NodesFDT extends Nodes {
+  protected getProperty = (n: { depth: number }) => {
+    return n.depth;
   }
 }
 
-class VizDFDG extends Visualizer {
+class VizFDT extends Visualizer {
   constructor(data: any, scene: Scene, pickingScene: Scene, uniforms: { [uniform: string]: IUniform<Texture> }) {
     super();
     const { nodes, links } = data;
-    this.nodes = new NodesDFDG(nodes, scene, pickingScene, uniforms);
+    this.nodes = new NodesFDT(nodes, scene, pickingScene, uniforms);
     this.nodes.init();
     this.edges = new Edges(links, this.nodes.nodeReference, scene, uniforms);
   }
 }
 
-export const createDFDG = (player: Player) => {
+export const createFDT = (player: Player) => {
   const data = new Data(rawdata);
   player.setData(data)
-    .setVisualizer(VizDFDG)
+    .setVisualizer(VizFDT)
     .setGPUHandler(GPUHandler);
 }

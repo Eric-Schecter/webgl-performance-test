@@ -1,11 +1,11 @@
-import { Scene, WebGLRenderTarget, WebGLRenderer, PerspectiveCamera, Vector3 } from "three";
+import { Scene, WebGLRenderTarget, WebGLRenderer, PerspectiveCamera, Vector3, OrthographicCamera } from "three";
 import { Player } from "./player";
 
 export class Picker {
   private renderTarget: WebGLRenderTarget;
   private buffer: Uint8Array;
   private id = -1;
-  constructor(private renderer: WebGLRenderer, private camera: PerspectiveCamera,
+  constructor(private renderer: WebGLRenderer, private camera: PerspectiveCamera | OrthographicCamera,
     private pickingScene: Scene) {
     this.renderTarget = new WebGLRenderTarget(1, 1);
     this.buffer = new Uint8Array(4);

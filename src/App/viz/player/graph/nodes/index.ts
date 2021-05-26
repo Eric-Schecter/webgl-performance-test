@@ -1,6 +1,6 @@
 import { Scene, BufferGeometry, ShaderMaterial, Points, BufferAttribute, Color, Material, IUniform, Texture } from "three";
 import { vertexShader, fragmentShader } from './shaders';
-import { DataNode } from "../../data/fdt";
+import { DataNode } from "../../data/force-directed-tree";
 import { Pos, getTextureSize, vec3 } from "../../../../../shared";
 
 export class Nodes {
@@ -62,7 +62,7 @@ export class Nodes {
   private genePickingNodeColor = (i: number) => {
     return new Color().setHex(i + 1);
   }
-  protected getProperty = (n: any): any => {
+  protected getProperty = (n: any): number | string => {
     return Math.random();
   }
   protected createNodesColor = (size: number, nodes: any[]) => {

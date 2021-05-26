@@ -9,7 +9,7 @@ type VizConstroctor = { new(data: any, scene: Scene, pickingScene: Scene, unifor
 export class Player {
   private visualizer?: Visualable;
   private gpuHandler?: GPU;
-  private uniforms: { [uniform: string]: IUniform<any> };
+  private uniforms: Uniforms;
   private data: any;
   private creator = PlayerCreator;
   constructor(private scene: Scene, private pickingScene: Scene, private renderer: WebGLRenderer) {

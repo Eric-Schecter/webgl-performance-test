@@ -1,7 +1,8 @@
-import { Renderer, PerspectiveCamera } from "three";
+import { Renderer, PerspectiveCamera, OrthographicCamera } from "three";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 
-export const resizeRendererToDisplaySize = (renderer: Renderer, camera: PerspectiveCamera,composer:EffectComposer) => {
+export const resizeRendererToDisplaySize = (renderer: Renderer, camera: PerspectiveCamera | OrthographicCamera,
+  composer:EffectComposer) => {
   const canvas = renderer.domElement;
   const pixelRatio = window.devicePixelRatio;
   const { width, clientWidth, height, clientHeight } = canvas;
@@ -11,7 +12,9 @@ export const resizeRendererToDisplaySize = (renderer: Renderer, camera: Perspect
   if (needResize) {
     renderer.setSize(cWidth, cHeight, false);
     composer.setSize(cWidth,cHeight);
-    camera.aspect = cWidth / cHeight;
+    if(camera instanceof PerspectiveCamera){
+      camera.aspect = cWidth / cHeight;
+    }
     camera.updateProjectionMatrix();
   }
 }

@@ -15,7 +15,7 @@ export class GPUHandler {
     const nodeWidth = getTextureSize(nodes.length);
     this.gpuCompute = new GPUComputationRenderer(nodeWidth, nodeWidth, renderer);
     this.positionVariable = this.setPosVariable(nodes, nodeWidth);
-    this.velocityVariable = this.setVeloVariable(nodeWidth);
+    this.velocityVariable = this.setVeloVariable(nodes, nodeWidth);
     this.setupGpgpu();
     this.setNodesData(nodes, nodeWidth);
     this.setLinksData(links);
@@ -25,8 +25,9 @@ export class GPUHandler {
     nodes.forEach(({ x, y, z }, i) => posTexture.image.data.set([x, y, z, 0], i * 4));
     return this.gpuCompute.addVariable("texturePosition", fragmentPos, posTexture);
   }
-  private setVeloVariable = (nodeWidth: number) => {
+  private setVeloVariable = (nodes: any[], nodeWidth: number) => {
     const veloTexture = new DataTexture(new Float32Array(nodeWidth ** 2 * 4).fill(-1), nodeWidth, nodeWidth, RGBAFormat, FloatType);
+    nodes.forEach((d, i) => veloTexture.image.data.set([0, 0, 0, 0], i * 4));
     return this.gpuCompute.addVariable("textureVelocity", fragmentVelocity, veloTexture);
   }
   private setNodesData = (nodes: any[], nodeWidth: number) => {
@@ -34,7 +35,7 @@ export class GPUHandler {
     this.velocityUniforms.nodeCount.value = nodes.length;
 
     const nodesTexture = new DataTexture(new Float32Array(nodeWidth ** 2 * 4).fill(-1), nodeWidth, nodeWidth, RGBAFormat, FloatType);
-    nodes.forEach(({height,group}, i) => nodesTexture.image.data.set([height || 1, group || 0, 0, i], i * 4));
+    nodes.forEach(({ height, group }, i) => nodesTexture.image.data.set([height || 1, group || 0, 0, i], i * 4));
     this.uniforms.textureNodes.value = nodesTexture;
     this.positionUniforms.textureNodes.value = nodesTexture;
     this.velocityUniforms.textureNodes.value = nodesTexture;
@@ -70,7 +71,7 @@ export class GPUHandler {
     this.positionUniforms.textureNodes = { value: null };
     this.velocityUniforms.textureLinks = { value: null };
     this.velocityUniforms.textureNodes = { value: null };
-    this.positionUniforms.pickedNode = { value: new Vector4(-1) };
+    this.positionUniforms.pickedNode = { value: new Vector4(-1, -1, -1, -1) };
     this.velocityUniforms.uTime = { value: 0 };
     this.velocityUniforms.linkWidth = { value: 0 };
     this.velocityUniforms.nodeWidth = { value: 0 };
@@ -96,7 +97,7 @@ export class GPUHandler {
   public updatePoint = (i: number, x: number, y: number) => {
     (this.positionUniforms.pickedNode.value as Vector4).set(x, y, 0, i);
   }
-  public updateView = (is2d:boolean) => {
+  public updateView = (is2d: boolean) => {
     this.velocityUniforms.is2d.value = is2d ? 1 : 0;
   }
 }

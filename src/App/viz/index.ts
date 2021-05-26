@@ -2,7 +2,6 @@ import { Scene, WebGLRenderer, Vector2, Clock } from 'three';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { resizeRendererToDisplaySize } from './resize';
 import { MyCamera } from './camera';
 import { Renderer } from './renderer';
@@ -17,7 +16,6 @@ export class Viz {
   private renderer: WebGLRenderer;
   private composer: EffectComposer;
   private player: Player;
-  private control: OrbitControls;
   private eventsHandler: EventsHandler;
   private picker: Picker;
   private pickingScene: Scene;
@@ -33,16 +31,9 @@ export class Viz {
     this.camera = new MyCamera(canvas);
     this.composer = this.initComposer();
     this.player = new Player(this.scene, this.pickingScene, this.renderer);
-    this.control = this.createControl(canvas);
     this.picker = new Picker(this.renderer, this.camera.instance, this.pickingScene);
-    this.eventsHandler = new EventsHandler(canvas, this.picker, this.control, this.camera.instance,this.player);
+    this.eventsHandler = new EventsHandler(canvas, this.picker, this.camera, this.player);
     this.update();
-  }
-  private createControl = (canvas: HTMLCanvasElement) => {
-    const control = new OrbitControls(this.camera.instance, canvas);
-    control.enableDamping = true;
-    control.enablePan = false;
-    return control;
   }
   private initComposer = () => {
     const renderScene = new RenderPass(this.scene, this.camera.instance);
@@ -83,9 +74,8 @@ export class Viz {
   }
   public changeMode = (is2d: boolean) => {
     this.is2d = is2d;
-    this.control.enableRotate = !is2d;
     this.player.updateView(is2d);
-    this.camera.init();
+    this.camera.init(is2d);
   }
   public changeType = (type: string) => {
     this.player.dispose();
@@ -100,5 +90,6 @@ export class Viz {
   public unregister = () => {
     this.renderer.dispose();
     this.player.dispose();
+    this.camera.dispose();
   }
 }

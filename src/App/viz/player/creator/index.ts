@@ -1,7 +1,7 @@
 import { Player } from "..";
-import { createFDT } from "./fdt";
-import { createFDG } from "./fdg";
-import { createDFDG } from "./dfdg";
+import { createFDT } from "./force-directed-tree";
+import { createFDG } from "./force-directed-graph";
+import { createDFDG } from "./disjoint-force-directed-graph";
 
 export const table: { [prop: string]: (player: Player) => void } = {
   'force-directed-tree': createFDT,

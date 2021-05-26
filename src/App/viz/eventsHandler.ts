@@ -1,35 +1,68 @@
-import { Vector3, PerspectiveCamera } from "three";
+import { Vector3 } from "three";
 import { Picker } from "./picker";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { Player } from "./player";
+import { MyCamera } from "./camera";
+
+enum Click {
+  LeftClick = 0,
+  RightClick = 2,
+}
+
+class ViewPort {
+  private startPosMouse = new Vector3();
+  private startPosCamera = new Vector3();
+  constructor(private mouse: Vector3, private camera: MyCamera) { }
+  public start = () => {
+    this.startPosMouse.copy(this.mouse);
+    this.startPosCamera.copy(this.camera.instance.position);
+  }
+  public update = () => {
+    const p = new Vector3().copy(this.mouse).sub(this.startPosMouse).multiplyScalar(-1);
+    p.y = -p.y;
+    p.z = 0;
+    this.camera.instance.position.copy(new Vector3().copy(this.startPosCamera).add(p));
+    const { x, y } = this.camera.instance.position;
+    this.camera.control.target.set(x, y, 0);
+  }
+  public end = () => {
+    this.startPosMouse.set(-10000, -10000, 0);
+    this.startPosCamera.set(-10000, -10000, 0);
+  }
+}
 
 export class EventsHandler {
-  private startPosMouse: Vector3;
-  private startPosCamera: Vector3;
-  private _mouse: Vector3;
-  private _mouseNormalized: Vector3;
-  private _isDown = false;
+  private _mouse = new Vector3();
+  private viewport: ViewPort;
   constructor(private canvas: HTMLCanvasElement, private picker: Picker,
-    private control: OrbitControls, private camera: PerspectiveCamera,private player:Player) {
-    this._mouse = new Vector3(-10000, -10000, -10000);
-    this._mouseNormalized = this._mouse.clone();
-    this.startPosMouse = this._mouse.clone();
-    this.startPosCamera = this._mouse.clone();
+    private camera: MyCamera, private player: Player) {
+    this.viewport = new ViewPort(this._mouse, camera);
+    this.init();
     this.register();
   }
+  private init = () => {
+    this._mouse.set(-10000, -10000, 0);
+    this.viewport.end();
+  }
   private move = (x: number, y: number) => {
-    if (!this._isDown) {
-      return;
-    }
     this._mouse.x = x;
     this._mouse.y = y;
+    this._mouse.z = this.camera.instance.position.z;
   }
-  private mousedown = ({ clientX, clientY }: MouseEvent) => {
-    this.down(clientX, clientY);
+  private mousedown = (e: MouseEvent) => {
+    const { clientX, clientY } = e;
+    this._mouse.x = clientX;
+    this._mouse.y = clientY;
+    if (e.button === Click.LeftClick) {
+      this.leftdown();
+    } else if (e.button === Click.RightClick) {
+      this.rightdown();
+    }
   }
   private touchdown = (e: TouchEvent) => {
     const { clientX, clientY } = e.touches[0];
-    this.down(clientX, clientY)
+    this._mouse.x = clientX;
+    this._mouse.y = clientY;
+    this.leftdown()
   }
   private mousemove = ({ clientX, clientY }: MouseEvent) => {
     this.move(clientX, clientY);
@@ -38,17 +71,17 @@ export class EventsHandler {
     const { clientX, clientY } = e.touches[0];
     this.move(clientX, clientY)
   }
-  private down = (x: number, y: number) => {
-    this._isDown = true;
-    this._mouse.x = x;
-    this._mouse.y = y;
-    this.startPosMouse.x = x;
-    this.startPosMouse.y = y;
-    this.startPosCamera.copy(this.camera.position);
+  private rightdown = () => {
+    this.viewport.start();
+    window.addEventListener('pointermove', this.moveviewport);
+    window.addEventListener('pointerup', this.up);
+    //todo: add touchmove event
+  }
+  private leftdown = () => {
     const res = this.picker.pick(this._mouse);
     if (res) {
-      this.control.enabled = false;
-    } 
+      this.camera.control.enabled = false;
+    }
 
     window.addEventListener('pointermove', this.mousemove);
     window.addEventListener('pointerup', this.up);
@@ -57,40 +90,46 @@ export class EventsHandler {
     window.addEventListener('touchend', this.up);
   }
   private up = () => {
-    this._isDown = false;
-    this._mouse.x = -10000;
-    this._mouse.y = -10000;
+    this.init();
     this.picker.init();
-    this.control.enabled = true;
+    this.camera.control.enabled = true;
     this.player.updatePoint(-1, 0, 0);
-
     window.removeEventListener('pointermove', this.mousemove);
     window.removeEventListener('pointerup', this.up);
+    window.removeEventListener('pointermove', this.moveviewport);
 
     window.removeEventListener('touchmove', this.touchmove);
     window.removeEventListener('touchend', this.up);
+    //todo add touchmove event for moveviewport
   }
   private moveviewport = ({ clientX, clientY }: MouseEvent) => {
-    const { width, height } = this.canvas;
-    const ratio = { x: (clientX - width / 2) / width, y: -(clientY - height / 2) / height };
-    this.camera.lookAt(ratio.x * 100, ratio.y * 100);
+    this.move(clientX, clientY);
+    this.viewport.update();
+  }
+  private contextmenu = (e: MouseEvent) => {
+    if (e.button === Click.RightClick) {
+      e.preventDefault();
+      return false;
+    }
   }
   private register = () => {
     this.canvas.addEventListener('pointerdown', this.mousedown);
     this.canvas.addEventListener('touchstart', this.touchdown, { passive: true });
-    // this.canvas.addEventListener('pointermove', this.moveviewport);
+    this.canvas.addEventListener('contextmenu', this.contextmenu);
   }
   public unregister = () => {
     this.canvas.removeEventListener('pointerdown', this.mousedown);
     this.canvas.removeEventListener('touchstart', this.touchdown);
-    // this.canvas.removeEventListener('pointermove', this.moveviewport);
+    this.canvas.removeEventListener('contextmenu', this.contextmenu);
   }
   public get mouse() {
     return this._mouse;
   }
   public get mouseNormalized() {
-    this._mouseNormalized.x = this.mouse.x / this.canvas.clientWidth * 2 - 1;
-    this._mouseNormalized.y = -(this.mouse.y / this.canvas.clientHeight) * 2 + 1;
-    return this._mouseNormalized;
+    return new Vector3(
+      this.mouse.x / this.canvas.clientWidth * 2 - 1,
+      -(this.mouse.y / this.canvas.clientHeight) * 2 + 1,
+      0,
+    );
   }
 }
