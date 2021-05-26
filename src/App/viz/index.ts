@@ -1,7 +1,5 @@
-import { Scene, WebGLRenderer, Vector2, Clock } from 'three';
+import { Scene, WebGLRenderer, Clock } from 'three';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
-import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass';
 import { resizeRendererToDisplaySize } from './resize';
 import { MyCamera } from './camera';
 import { Renderer } from './renderer';
@@ -10,6 +8,7 @@ import { EventsHandler } from './eventsHandler';
 import { Picker } from './picker';
 import { Player } from './player';
 import { MyStats } from './stats';
+import { Composer } from './composer';
 
 export class Viz {
   private scene: Scene;
@@ -30,23 +29,12 @@ export class Viz {
     this.scene = new MyScene().instance;
     this.pickingScene = new MyScene('black').instance;
     this.camera = new MyCamera(canvas);
-    this.composer = this.initComposer();
+    this.composer = new Composer(this.scene, this.camera.instance, this.renderer, canvas).instance;
     this.player = new Player(this.scene, this.pickingScene, this.renderer);
     this.picker = new Picker(this.renderer, this.camera.instance, this.pickingScene);
     this.eventsHandler = new EventsHandler(canvas, this.picker, this.camera, this.player);
     this.stats = new MyStats(canvas);
     this.update();
-  }
-  private initComposer = () => {
-    const renderScene = new RenderPass(this.scene, this.camera.instance);
-    const bloomPass = new UnrealBloomPass(new Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
-    bloomPass.threshold = 0;
-    bloomPass.strength = 1.5;
-    bloomPass.radius = 1;
-    const composer = new EffectComposer(this.renderer);
-    composer.addPass(renderScene);
-    composer.addPass(bloomPass);
-    return composer;
   }
   private draw = (time: number) => {
     this.player.update(time);
