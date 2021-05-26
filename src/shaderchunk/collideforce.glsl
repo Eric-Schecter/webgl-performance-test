@@ -3,11 +3,16 @@ const float strength=10.;
 
 #include <random2d.glsl>;
 
-vec4 collideForce(vec4 v,vec4 p,float nodeWidth,vec4 params,sampler2D textureNodes){
+vec4 collideForce(vec4 v,vec4 p,float nodeWidth,vec4 params,sampler2D textureNodes,float nodeCount){
   vec2 map=vec2(nodeWidth);
   float group=params.y;
+  bool isValid = true;
   for(float r=0.;r<nodeWidth;r++){
     for(float c=0.;c<nodeWidth;c++){
+      if(r * nodeWidth + c >= nodeCount){
+        isValid = false;
+        break;
+      }
       vec2 ref=vec2(r+.5,c+.5)/map;
       vec4 neighbour=texture(texturePosition,ref);
       vec4 neighbourParams=texture(textureNodes,ref);
@@ -19,6 +24,9 @@ vec4 collideForce(vec4 v,vec4 p,float nodeWidth,vec4 params,sampler2D textureNod
         vec3 force=direction*strength/dis2;
         v.xyz+=force.xyz;
       }
+    }
+    if(!isValid){
+      break;
     }
   }
   return v;

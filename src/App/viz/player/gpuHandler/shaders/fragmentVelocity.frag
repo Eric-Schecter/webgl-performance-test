@@ -31,8 +31,11 @@ void main(){
   vec4 v=texture(textureVelocity,uv);
   vec4 node=texture(textureNodes,uv);
   float nodeID=node.w;
-  v=collideForce(v,p,nodeWidth,node,textureNodes);
-  v=linkForce(v,p,nodeID,linkWidth,nodeWidth,textureLinks);
+  if(nodeID==-1.){
+    discard;
+  }
+  v=collideForce(v,p,nodeWidth,node,textureNodes,nodeCount);
+  v=linkForce(v,p,nodeID,linkWidth,nodeWidth,textureLinks,nodeCount);
   v=centerForce(v,p,nodeWidth,nodeCount,center);
 
   if(is2d==1.){

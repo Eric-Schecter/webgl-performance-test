@@ -33,11 +33,16 @@ vec4 forceBySourceNode(vec4 v,vec4 p,vec4 link,NodeParams params){
   return v;
 }
 
-vec4 linkForce(vec4 v,vec4 p,float nodeID,float linkWidth,float nodeWidth,sampler2D textureLinks){
+vec4 linkForce(vec4 v,vec4 p,float nodeID,float linkWidth,float nodeWidth,sampler2D textureLinks,float nodeCount){
   vec2 data=vec2(linkWidth);
   vec2 map=vec2(nodeWidth);
+  bool isValid = true;
   for(float r=0.;r<linkWidth;r++){
     for(float c=0.;c<linkWidth;c++){
+      if(r * nodeWidth + c >= nodeCount){
+        isValid = false;
+        break;
+      }
       vec2 ref=vec2(r+.5,c+.5)/data;
       vec4 link=texture(textureLinks,ref);
       float sourceID=link.x;
@@ -50,6 +55,9 @@ vec4 linkForce(vec4 v,vec4 p,float nodeID,float linkWidth,float nodeWidth,sample
         NodeParams sourceNode=getNodePos(sourceID,map,nodeWidth,texturePosition,textureVelocity);
         v=forceBySourceNode(v,p,link,sourceNode);
       }
+    }
+    if(!isValid){
+      break;
     }
   }
   return v;

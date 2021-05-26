@@ -1,9 +1,9 @@
 import { Scene, IUniform, Texture } from "three";
 import { Player } from "..";
 import { Data } from "../data/force-directed-graph";
-import rawdata from '../data/force-directed-graph/data.json';
 import { GPUHandler } from "../gpuHandler";
 import { Nodes, Edges, Visualizer } from "../graph";
+import { dataGenerator } from "../data/force-directed-graph/dataGenerator";
 
 class NodesFDG extends Nodes {
   protected getProperty = (n: { group: number }) => {
@@ -22,7 +22,7 @@ class VizFDG extends Visualizer {
 }
 
 export const createFDG = (player: Player) => {
-  const data = new Data(rawdata);
+  const data = new Data(dataGenerator(100,10));
   player.setData(data)
     .setVisualizer(VizFDG)
     .setGPUHandler(GPUHandler);
