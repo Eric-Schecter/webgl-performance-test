@@ -13,7 +13,6 @@ export class MyCamera {
   private createControl = () => {
     const control = new OrbitControls(this._instance, this.canvas);
     control.enableDamping = true;
-    control.enabled = false;
     return control;
   }
   public init = (is2d: boolean) => {

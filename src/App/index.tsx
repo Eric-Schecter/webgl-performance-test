@@ -27,11 +27,11 @@ export const App = () => {
     if (!viz) { return }
     viz.changeDarkMode(isDarkMode);
   }, [isDarkMode, viz])
-
+  
   return <div className={styles.root}>
     <Selection cb={changeType} isDark={isDarkMode} />
     <DarkMode cb={setIsDarkMode} isDark={isDarkMode}/>
     <ViewMode cb={changeMode} isDark={isDarkMode} />
-    <canvas ref={ref} className={styles.canvas} />
+    <canvas ref={ref} className={styles.canvas}/>
   </div>
 }
