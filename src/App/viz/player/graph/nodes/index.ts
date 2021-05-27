@@ -1,6 +1,6 @@
 import { Scene, BufferGeometry, ShaderMaterial, Points, BufferAttribute, Color, Material, IUniform, Texture } from "three";
 import { vertexShader, fragmentShader } from './shaders';
-import { DataNode } from "../../data/force-directed-tree";
+import { DataNode } from "../../dataHandler/force-directed-tree";
 import { Pos, getTextureSize, vec3 } from "../../../../../shared";
 
 export class Nodes {

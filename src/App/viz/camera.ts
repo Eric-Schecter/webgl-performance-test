@@ -1,13 +1,12 @@
-import { PerspectiveCamera, OrthographicCamera } from "three";
+import { PerspectiveCamera } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 export class MyCamera {
-  private _instance: PerspectiveCamera | OrthographicCamera;
+  private _instance: PerspectiveCamera;
   private _control: OrbitControls;
   constructor(private canvas: HTMLCanvasElement) {
     const { offsetWidth: width, offsetHeight: height } = canvas;
     this._instance = new PerspectiveCamera(75, width / height, 0.1, 10000);
-    // this._instance = new OrthographicCamera(-width / 2, width / 2, height / 2, -height / 2, 1, 10000);
     this._instance.position.set(0, 0, 200);
     this._control = this.createControl();
   }

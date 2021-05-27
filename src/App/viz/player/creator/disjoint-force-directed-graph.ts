@@ -1,7 +1,7 @@
 import { Scene, IUniform, Texture } from "three";
 import { Player } from "..";
-import { Data } from "../data/disjoint-force-directed-graph";
-import rawdata from '../data/disjoint-force-directed-graph/data.json';
+import { Data } from "../dataHandler/disjoint-force-directed-graph";
+import rawdata from '../dataHandler/disjoint-force-directed-graph/data.json';
 import { GPUHandler } from "../gpuHandler";
 import { Nodes, Edges, Visualizer } from "../graph";
 

@@ -1,7 +1,7 @@
 import { Scene, IUniform, Texture } from "three";
 import { Player } from "..";
-import { Data } from "../data/force-directed-tree";
-import rawdata from '../data/force-directed-tree/data.json';
+import { Data } from "../dataHandler/force-directed-tree";
+import rawdata from '../dataHandler/force-directed-tree/data.json';
 import { GPUHandler } from "../gpuHandler";
 import { Nodes, Edges, Visualizer } from "../graph";
 
