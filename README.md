@@ -6,20 +6,22 @@
 </p>
 
 ## About The Project
-A data visualizer aims to support smooth interaction with big data.  
+The project aims to find out the way of supporting smooth interaction with big data.  
+The project is trying to get the best performance by handling logic in shader as much as possible.  
+Todo: optimize collision check algorithm in compute shader.  
 
 ## Get Started
 #### Run Online   
-[https://data-visualizer-project.netlify.app](https://data-visualizer-project.netlify.app) 
+[https://webgl-performance-test.netlify.app](https://webgl-performance-test.netlify.app) 
 
 #### Run locally
 1. Clone the repo  
 ```
-git clone git@github.com:Eric-Schecter/data-visualizer.git
+git clone git@github.com:Eric-Schecter/webgl-performance-test.git
 ```
 2. Open Folder  
 ```
-cd data-visualizer
+cd webgl-performance-test
 ```
 3. Install npm packages  
 ```
@@ -37,5 +39,5 @@ This project is licensed under [![License: MIT](https://img.shields.io/badge/Lic
 ## Contact
 * Email:[eric199002@icloud.com](eric199002@icloud.com)
 * Twitter:[https://twitter.com/nikoniko600](https://twitter.com/nikoniko600)
-* Repo:[https://github.com/Eric-Schecter/data-visualizer](https://github.com/Eric-Schecter/data-visualizer)
-* App:[https://data-visualizer-project.netlify.app](https://data-visualizer-project.netlify.app) 
+* Repo:[https://github.com/Eric-Schecter/webgl-performance-test](https://github.com/Eric-Schecter/webgl-performance-test)
+* App:[https://webgl-performance-test.netlify.app](https://webgl-performance-test.netlify.app) 
