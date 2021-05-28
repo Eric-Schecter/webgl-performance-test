@@ -13,7 +13,7 @@ export class GUIHelper {
     const params = {
       count: initCount,
     }
-    gui.add(params, 'count', 1, 5000, 1).onChange(this.changeCount);
+    gui.add(params, 'count', 1, 3000, 1).onChange(this.changeCount);
   }
   private changeCount = (n: number) => {
     this.timer && clearTimeout(this.timer);
