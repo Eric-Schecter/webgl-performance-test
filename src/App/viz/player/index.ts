@@ -12,6 +12,7 @@ export class Player {
   private uniforms: Uniforms;
   private data: any;
   private creator = PlayerCreator;
+  private n = 100;
   constructor(private scene: Scene, private pickingScene: Scene, private renderer: WebGLRenderer) {
     this.uniforms = UniformsUtils.merge([
       { texturePosition: { value: null } },
@@ -33,11 +34,18 @@ export class Player {
     this.uniforms.isDark.value = isDark ? 1. : 0.;
     this.visualizer?.update();
   }
+  public updateData = (n: number) => {
+    this.n = n;
+    this.data.reset(n);
+    this.gpuHandler?.reset(this.data);
+    this.visualizer?.reset(this.data);
+  }
   public dispose = () => {
     this.visualizer?.dispose();
   }
   public setData = (data: any) => {
     this.data = data;
+    this.data.reset(this.n);
     return this;
   }
   public setVisualizer = (Viz: VizConstroctor) => {

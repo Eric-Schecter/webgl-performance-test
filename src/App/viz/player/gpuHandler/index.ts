@@ -5,30 +5,23 @@ import { fragmentPos, fragmentVelocity } from "./shaders";
 import { getTextureSize } from "../../../../shared";
 
 export class GPUHandler {
-  private gpuCompute: GPUComputationRenderer;
-  private positionVariable: Variable;
-  private velocityVariable: Variable;
+  private gpuCompute?: GPUComputationRenderer;
+  private positionVariable?: Variable;
+  private velocityVariable?: Variable;
   private velocityUniforms: { [uniform: string]: IUniform<Texture | number | null> } = {};
   private positionUniforms: { [uniform: string]: IUniform<Texture | number | Vector4 | null> } = {};
-  constructor(data: any, renderer: WebGLRenderer, private uniforms: { [uniform: string]: IUniform<Texture> }) {
-    const { links, nodes } = data;
-    const nodeWidth = getTextureSize(nodes.length);
-    this.gpuCompute = new GPUComputationRenderer(nodeWidth, nodeWidth, renderer);
-    this.positionVariable = this.setPosVariable(nodes, nodeWidth);
-    this.velocityVariable = this.setVeloVariable(nodes, nodeWidth);
-    this.setupGpgpu();
-    this.setNodesData(nodes, nodeWidth);
-    this.setLinksData(links);
+  private is2d = true;
+  constructor(data: any, private renderer: WebGLRenderer, private uniforms: { [uniform: string]: IUniform<Texture> }) {
+    this.reset(data);
   }
   private setPosVariable = (nodes: any[], nodeWidth: number) => {
     const posTexture = new DataTexture(new Float32Array(nodeWidth ** 2 * 4).fill(-1), nodeWidth, nodeWidth, RGBAFormat, FloatType);
     nodes.forEach(({ x, y, z }, i) => posTexture.image.data.set([x, y, z, 0], i * 4));
-    return this.gpuCompute.addVariable("texturePosition", fragmentPos, posTexture);
+    return this.gpuCompute?.addVariable("texturePosition", fragmentPos, posTexture);
   }
-  private setVeloVariable = (nodes: any[], nodeWidth: number) => {
+  private setVeloVariable = (nodeWidth: number) => {
     const veloTexture = new DataTexture(new Float32Array(nodeWidth ** 2 * 4).fill(-1), nodeWidth, nodeWidth, RGBAFormat, FloatType);
-    nodes.forEach((d, i) => veloTexture.image.data.set([0, 0, 0, 0], i * 4));
-    return this.gpuCompute.addVariable("textureVelocity", fragmentVelocity, veloTexture);
+    return this.gpuCompute?.addVariable("textureVelocity", fragmentVelocity, veloTexture);
   }
   private setNodesData = (nodes: any[], nodeWidth: number) => {
     this.velocityUniforms.nodeWidth.value = nodeWidth;
@@ -60,10 +53,10 @@ export class GPUHandler {
     this.velocityUniforms.textureLinks.value = linksTexture;
   }
   private setDependency = (dependencies: Variable[]) => {
-    dependencies.forEach(dependency => this.gpuCompute.setVariableDependencies(dependency, dependencies))
+    dependencies.forEach(dependency => this.gpuCompute?.setVariableDependencies(dependency, dependencies))
   }
   private setupGpgpu = () => {
-    if (!this.positionVariable || !this.velocityVariable) { return }
+    if (!this.positionVariable || !this.velocityVariable || !this.gpuCompute) { return }
     this.setDependency([this.positionVariable, this.velocityVariable]);
     this.velocityUniforms = this.velocityVariable.material.uniforms;
     this.positionUniforms = this.positionVariable.material.uniforms;
@@ -76,14 +69,14 @@ export class GPUHandler {
     this.velocityUniforms.linkWidth = { value: 0 };
     this.velocityUniforms.nodeWidth = { value: 0 };
     this.velocityUniforms.nodeCount = { value: 0 };
-    this.velocityUniforms.is2d = { value: 0 };
+    this.velocityUniforms.is2d = { value: 1 };
     const error = this.gpuCompute.init();
     if (error !== null) {
       console.error(error);
     }
   }
   public update = (time: number) => {
-    if (!this.positionVariable || !this.velocityVariable) { return }
+    if (!this.positionVariable || !this.velocityVariable || !this.gpuCompute) { return }
     this.gpuCompute.compute();
     this.uniforms.texturePosition.value = (this.gpuCompute.getCurrentRenderTarget(this.positionVariable) as any).texture;
     this.uniforms.textureVelocity.value = (this.gpuCompute.getCurrentRenderTarget(this.velocityVariable) as any).texture;
@@ -98,6 +91,18 @@ export class GPUHandler {
     (this.positionUniforms.pickedNode.value as Vector4).set(x, y, 0, i);
   }
   public updateView = (is2d: boolean) => {
+    this.is2d = is2d;
     this.velocityUniforms.is2d.value = is2d ? 1 : 0;
+  }
+  public reset = (data: any) => {
+    const { links, nodes } = data;
+    const nodeWidth = getTextureSize(nodes.length);
+    this.gpuCompute = new GPUComputationRenderer(nodeWidth, nodeWidth, this.renderer);
+    this.positionVariable = this.setPosVariable(nodes, nodeWidth);
+    this.velocityVariable = this.setVeloVariable(nodeWidth);
+    this.setupGpgpu();
+    this.setNodesData(nodes, nodeWidth);
+    this.setLinksData(links);
+    this.updateView(this.is2d);
   }
 }

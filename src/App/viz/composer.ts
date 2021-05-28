@@ -15,7 +15,7 @@ export class Composer {
     const { clientWidth, clientHeight } = canvas;
     const bloomPass = new UnrealBloomPass(new Vector2(clientWidth, clientHeight), 1.5, 0.4, 0.85);
     bloomPass.threshold = 0;
-    bloomPass.strength = 1.5;
+    bloomPass.strength = 0.5;
     bloomPass.radius = 1;
     return bloomPass;
   }

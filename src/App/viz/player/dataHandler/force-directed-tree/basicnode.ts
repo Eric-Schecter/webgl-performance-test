@@ -1,11 +1,12 @@
 
-import { TreeNodeData, LeafNodeData } from "./types";
+import { TreeNodeData } from "./treenodedata";
+import { LeafNodeData } from './leafnodedata';
 import { MovealbeTreeNode } from "./datanode";
 
 export abstract class BasicNode {
   protected _depth = 0;
   protected _height = 0;
-  protected _parent:  MovealbeTreeNode | null = null;
+  protected _parent: MovealbeTreeNode | null = null;
   constructor(protected _data: TreeNodeData | LeafNodeData) { }
   public get data() {
     return this._data;

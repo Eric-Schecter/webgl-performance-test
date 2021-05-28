@@ -1,5 +1,6 @@
 import { MovableNode } from "./moveablenode";
-import { TreeNodeData, LeafNodeData } from "./types";
+import { TreeNodeData } from "./treenodedata";
+import { LeafNodeData } from './leafnodedata';
 
 export class DataNode extends MovableNode {
   private initRaidus = 10;
@@ -15,10 +16,10 @@ export class DataNode extends MovableNode {
   }
 }
 
-export class MovealbeTreeNode extends DataNode{
+export class MovealbeTreeNode extends DataNode {
   private _children: Array<MovealbeTreeNode | MovealbeLeafNode | TreeNodeData | LeafNodeData>;
-  constructor(node:TreeNodeData,index:number){
-    super(node,index);
+  constructor(node: TreeNodeData, index: number) {
+    super(node, index);
     this._children = node.children;
   }
   public get children(): Array<MovealbeTreeNode | MovealbeLeafNode | TreeNodeData | LeafNodeData> {
@@ -26,10 +27,10 @@ export class MovealbeTreeNode extends DataNode{
   }
 }
 
-export class MovealbeLeafNode extends DataNode{
+export class MovealbeLeafNode extends DataNode {
   private _value: number;
-  constructor(node: LeafNodeData, index: number){
-    super(node,index);
+  constructor(node: LeafNodeData, index: number) {
+    super(node, index);
     this._value = node.value;
   }
   public get value(): number {

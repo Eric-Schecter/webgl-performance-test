@@ -2,7 +2,7 @@ import { Player } from "..";
 import { Data } from "../dataHandler/force-directed-graph";
 import { GPUHandler } from "../gpuHandler";
 import { Nodes, Visualizer } from "../graph";
-import { dataGenerator } from "../dataHandler/force-directed-graph/dataGenerator";
+import { initCount } from "../../../../shared";
 
 class NodesFDG extends Nodes {
   protected getProperty = (n: { group: number }) => {
@@ -11,7 +11,7 @@ class NodesFDG extends Nodes {
 }
 
 export const createFDG = (player: Player) => {
-  const data = new Data(dataGenerator(800, 10));
+  const data = new Data(initCount);
   Visualizer.nodesType = NodesFDG;
   player.setData(data)
     .setVisualizer(Visualizer)

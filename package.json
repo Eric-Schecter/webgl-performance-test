@@ -10,12 +10,13 @@
     "react-scripts": "^4.0.3",
     "stats.js": "^0.17.0",
     "three": "^0.126.1",
+    "ts-jest": "^26.0.0",
     "typescript": "^3.7.5"
   },
   "scripts": {
     "start": "react-app-rewired start",
     "build": "GENERATE_SOURCEMAP=false react-app-rewired build",
-    "test": "jest --watchAll",
+    "test": "jest --config jestconfig.json",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -34,6 +35,8 @@
     ]
   },
   "devDependencies": {
+    "@types/dat.gui": "^0.7.6",
+    "@types/jest": "^26.0.23",
     "@types/react": "^16.9.45",
     "@types/react-dom": "^16.9.8",
     "@types/react-router-dom": "^5.1.7",

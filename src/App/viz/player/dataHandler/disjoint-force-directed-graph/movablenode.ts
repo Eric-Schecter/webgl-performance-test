@@ -1,6 +1,6 @@
 export class MovableNode {
   protected _id = '';
-  protected _group = '';
+  protected _group = 0;
   protected _vx = 0;
   protected _vy = 0;
   protected _vz = 0;

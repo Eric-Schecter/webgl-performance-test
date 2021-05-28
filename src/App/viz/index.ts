@@ -9,6 +9,7 @@ import { Picker } from './picker';
 import { Player } from './player';
 import { MyStats } from './stats';
 import { Composer } from './composer';
+import { GUIHelper } from './gui';
 
 export class Viz {
   private scene: Scene;
@@ -34,6 +35,7 @@ export class Viz {
     this.picker = new Picker(this.renderer, this.camera.instance, this.pickingScene);
     this.eventsHandler = new EventsHandler(canvas, this.picker, this.camera, this.player);
     this.stats = new MyStats(canvas);
+    new GUIHelper(canvas,this.player);
     this.update();
   }
   private draw = (time: number) => {
@@ -60,7 +62,8 @@ export class Viz {
   public changeType = (type: string) => {
     this.player.dispose();
     this.player.create(type);
-    this.changeMode(this.is2d);
+    this.player.updateView(this.is2d);
+    // this.changeMode(this.is2d);
     this.player.updateDarkMode(this.isDark);
   }
   public changeDarkMode = (isDark: boolean) => {

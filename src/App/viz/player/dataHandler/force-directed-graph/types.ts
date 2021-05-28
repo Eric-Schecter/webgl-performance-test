@@ -8,8 +8,3 @@ export type Link = {
   target: string,
   value: number,
 }
-
-export type InitData = {
-  nodes: Node[],
-  links: Link[],
-}

@@ -1,4 +1,5 @@
-import { TreeNodeData, LeafNodeData } from "./types";
+import { TreeNodeData } from "./treenodedata";
+import { LeafNodeData } from './leafnodedata';
 import { BasicNode } from "./basicnode";
 import { MovealbeTreeNode, MovealbeLeafNode } from "./datanode";
 
@@ -6,21 +7,21 @@ export class Hierarchy {
   private _data: MovealbeTreeNode;
   private index = 0;
   constructor(data: TreeNodeData) {
-    this._data = new MovealbeTreeNode(data,this.index);
+    this._data = new MovealbeTreeNode(data, this.index);
     this.index++;
     this.setDepth();
     this.setHeight();
   }
-  private createTreeNode = (child:TreeNodeData,node:MovealbeTreeNode,i:number) => {
-    const childNode = new MovealbeTreeNode(child,this.index);
+  private createTreeNode = (child: TreeNodeData, node: MovealbeTreeNode, i: number) => {
+    const childNode = new MovealbeTreeNode(child, this.index);
     this.index++;
     node.children[i] = childNode;
     childNode.parent = node;
     childNode.depth = node.depth + 1;
     return childNode;
   }
-  private createLeafNode = (child:LeafNodeData,node:MovealbeTreeNode,i:number) => {
-    const childNode = new MovealbeLeafNode(child,this.index);
+  private createLeafNode = (child: LeafNodeData, node: MovealbeTreeNode, i: number) => {
+    const childNode = new MovealbeLeafNode(child, this.index);
     this.index++;
     node.children[i] = childNode;
     childNode.parent = node;
@@ -35,9 +36,9 @@ export class Hierarchy {
         for (let i = length - 1; i >= 0; i--) {
           const child = node.data.children[i];
           if ('children' in child) {
-            queue.push(this.createTreeNode(child,node,i));
+            queue.push(this.createTreeNode(child, node, i));
           } else {
-            this.createLeafNode(child,node,i);
+            this.createLeafNode(child, node, i);
           }
         }
       }
@@ -55,7 +56,7 @@ export class Hierarchy {
       const node = queue.pop() as MovealbeTreeNode | MovealbeLeafNode;
       this.updateHeight(node);
       if (node instanceof MovealbeTreeNode) {
-        const { length } = node.children ;
+        const { length } = node.children;
         for (let i = length - 1; i >= 0; i--) {
           const child = node.children[i] as MovealbeTreeNode | MovealbeLeafNode
           queue.push(child);
