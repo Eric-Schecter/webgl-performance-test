@@ -1,7 +1,6 @@
 import { GPUComputationRenderer, Variable } from "three/examples/jsm/misc/GPUComputationRenderer";
 import { IUniform, WebGLRenderer, Texture, DataTexture, RGBAFormat, FloatType, Vector4 } from "three";
 import { fragmentPos, fragmentVelocity } from "./shaders";
-// import { DataLink, DataNode } from "../data/fdg";
 import { getTextureSize } from "../../../../shared";
 
 export class GPUHandler {
