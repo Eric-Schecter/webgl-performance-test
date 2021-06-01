@@ -10,15 +10,16 @@ export const table: { [prop: string]: (player: Player, data: any) => void } = {
 
 export class PlayerCreator {
   private static workderHandler = new WorkerHandler();
-  public create = (type: string, player: Player, n: number) => {
+  constructor(private player: Player) { }
+  public create = (type: string, n: number) => {
     if (type in table) {
       const creator = table[type];
-      const cb = (data: any) => creator(player, data);
+      const cb = (data: any) => creator(this.player, data);
       PlayerCreator.workderHandler.dispatch(type, cb, n);
     }
   }
-  public update = (type: string, player: Player, n: number) => {
-    const cb = (data: any) => player.setData(data).reset();
+  public update = (type: string, n: number) => {
+    const cb = (data: any) => this.player.setData(data).reset();
     PlayerCreator.workderHandler.dispatch(type, cb, n)
   }
 }

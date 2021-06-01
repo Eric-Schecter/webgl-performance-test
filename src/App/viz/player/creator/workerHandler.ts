@@ -13,7 +13,7 @@ export class WorkerHandler {
     this.cb = cb;
   }
   private update = (e: any) => {
-    this.cb(e.data);
+    e.data && this.cb(e.data);
   }
   private register = () => {
     this.worker.addEventListener('message', this.update);

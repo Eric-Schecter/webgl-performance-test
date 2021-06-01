@@ -12,7 +12,7 @@ export class Player {
   private gpuHandler?: GPU;
   private uniforms: Uniforms;
   private data: any;
-  private creator = new PlayerCreator();
+  private creator: PlayerCreator;
   private n = initCount;
   private type = '';
   constructor(private scene: Scene, private pickingScene: Scene, private renderer: WebGLRenderer) {
@@ -22,6 +22,7 @@ export class Player {
       { textureNodes: { value: null } },
       { isDark: { value: 0 } }
     ]);
+    this.creator = new PlayerCreator(this);
   }
   public update = (time: number) => {
     this.gpuHandler?.update(time);
@@ -38,9 +39,9 @@ export class Player {
   }
   public updateData = (n: number) => {
     this.n = n;
-    this.creator.update(this.type,this, this.n);
+    this.creator.update(this.type, this.n);
   }
-  public reset = () =>{
+  public reset = () => {
     this.gpuHandler?.reset(this.data);
     this.visualizer?.reset(this.data);
   }
@@ -62,6 +63,6 @@ export class Player {
   }
   public create = (type: string) => {
     this.type = type;
-    this.creator.create(type, this, this.n);
+    this.creator.create(type, this.n);
   }
 }
