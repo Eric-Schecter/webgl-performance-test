@@ -60,10 +60,8 @@ export class Viz {
     this.camera.init(is2d);
   }
   public changeType = (type: string) => {
-    this.player.dispose();
     this.player.create(type);
     this.player.updateView(this.is2d);
-    // this.changeMode(this.is2d);
     this.player.updateDarkMode(this.isDark);
   }
   public changeDarkMode = (isDark: boolean) => {
