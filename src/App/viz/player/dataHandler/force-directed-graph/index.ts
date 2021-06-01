@@ -2,14 +2,15 @@ import { Node } from "./types";
 import { DataNode } from "./datanode";
 import { DataLink } from "./datalink";
 import { randomString, randomBetween } from "../../../../../shared";
+import { DataHandler } from "../interface";
 
 export { DataNode, DataLink };
 
-export class Data {
+export class Data implements DataHandler{
   private _nodes: DataNode[] = [];
   private _links: DataLink[] = [];
   private gtemp = 1;
-  constructor(n: number, private g = 10) {
+  constructor(n: number, private g = 5) {
     this.reset(n);
   }
   private geneLinkData = (node: Node, nodes: Node[], index: number) => {
@@ -41,7 +42,7 @@ export class Data {
     return n <= 1
       ? []
       : nodes.map((node, index) =>
-        new Array(randomBetween(1, 5))
+        new Array(randomBetween(1, 3))
           .fill(0)
           .map(() => this.geneLinkData(node, nodes, index)))
         .reduce((pre, curr) => pre.concat(curr), [])
@@ -56,11 +57,9 @@ export class Data {
     const data = this.generate(n);
     this._nodes = data.nodes.map((node, i) => new DataNode(node, i));
     this._links = data.links.map((link) => new DataLink(this._nodes, link));
+    return this;
   }
-  public get nodes() {
-    return this._nodes;
-  }
-  public get links() {
-    return this._links;
+  public get data() {
+    return { nodes: this._nodes.map(node=>node.toJSON), links: this._links.map(link=>link.toJSON) };
   }
 }

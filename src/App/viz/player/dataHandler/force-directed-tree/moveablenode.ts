@@ -1,6 +1,6 @@
 import { BasicNode } from "./basicnode";
 
-export class MovableNode extends BasicNode{
+export class MovableNode extends BasicNode {
   protected _vx = 0;
   protected _vy = 0;
   protected _vz = 0;
@@ -28,5 +28,18 @@ export class MovableNode extends BasicNode{
   }
   public get index() {
     return this._index;
+  }
+  public get toJSON() {
+    return {
+      vx: this._vx,
+      vy: this._vy,
+      vz: this._vz,
+      x: this._x,
+      y: this._y,
+      z: this._z,
+      index: this._index,
+      depth: this._depth,
+      height: this._height,
+    }
   }
 }

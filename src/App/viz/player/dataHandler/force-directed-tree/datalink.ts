@@ -11,10 +11,10 @@ export class DataLink {
     this._source = source;
     this._target = target;
   }
-  public get source() {
-    return this._source;
-  }
-  public get target() {
-    return this._target;
+  public get toJSON() {
+    return {
+      source: this._source.toJSON,
+      target: this._target.toJSON,
+    }
   }
 }

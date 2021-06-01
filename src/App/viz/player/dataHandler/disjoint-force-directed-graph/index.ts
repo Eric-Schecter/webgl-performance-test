@@ -1,10 +1,11 @@
 import { DataNode } from "./datanode";
 import { DataLink } from "./datalink";
 import { randomBetween, randomString } from "../../../../../shared";
+import { DataHandler } from "../interface";
 
 export { DataNode, DataLink };
 
-export class Data {
+export class Data implements DataHandler {
   private _nodes: DataNode[] = [];
   private _links: DataLink[] = [];
   constructor(n: number) {
@@ -42,11 +43,9 @@ export class Data {
     const data = this.generate(n);
     this._nodes = data.nodes.map((node, i) => new DataNode(node, i));
     this._links = data.links.map((link) => new DataLink(this._nodes, link));
+    return this;
   }
-  public get nodes() {
-    return this._nodes;
-  }
-  public get links() {
-    return this._links;
+  public get data() {
+    return { nodes: this._nodes.map(node => node.toJSON), links: this._links.map(link => link.toJSON) };
   }
 }

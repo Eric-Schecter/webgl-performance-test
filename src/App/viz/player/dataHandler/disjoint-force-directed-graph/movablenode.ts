@@ -35,4 +35,17 @@ export class MovableNode {
   public get index() {
     return this._index;
   }
+  public get toJSON() {
+    return {
+      id: this._id,
+      group: this._group,
+      vx: this._vx,
+      vy: this._vy,
+      vz: this._vz,
+      x: this._x,
+      y: this._y,
+      z: this._z,
+      index: this._index,
+    }
+  }
 }

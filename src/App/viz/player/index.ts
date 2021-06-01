@@ -1,6 +1,7 @@
 import { Scene, UniformsUtils, IUniform, WebGLRenderer } from "three";
 import { Visualable, GPU } from "../../../shared";
 import { PlayerCreator } from "./creator";
+import { initCount } from "../../../shared";
 
 type Uniforms = { [uniform: string]: IUniform<any> };
 type GPUConstroctor = { new(data: any, renderer: WebGLRenderer, uniform: Uniforms): GPU };
@@ -11,8 +12,9 @@ export class Player {
   private gpuHandler?: GPU;
   private uniforms: Uniforms;
   private data: any;
-  private creator = PlayerCreator;
-  private n = 100;
+  private creator = new PlayerCreator();
+  private n = initCount;
+  private type = '';
   constructor(private scene: Scene, private pickingScene: Scene, private renderer: WebGLRenderer) {
     this.uniforms = UniformsUtils.merge([
       { texturePosition: { value: null } },
@@ -36,7 +38,9 @@ export class Player {
   }
   public updateData = (n: number) => {
     this.n = n;
-    this.data.reset(n);
+    this.creator.update(this.type,this, this.n);
+  }
+  public reset = () =>{
     this.gpuHandler?.reset(this.data);
     this.visualizer?.reset(this.data);
   }
@@ -45,10 +49,10 @@ export class Player {
   }
   public setData = (data: any) => {
     this.data = data;
-    this.data.reset(this.n);
     return this;
   }
   public setVisualizer = (Viz: VizConstroctor) => {
+    this.visualizer?.dispose();
     this.visualizer = new Viz(this.data, this.scene, this.pickingScene, this.uniforms);
     return this;
   }
@@ -57,6 +61,7 @@ export class Player {
     return this;
   }
   public create = (type: string) => {
-    this.creator.create(type, this);
+    this.type = type;
+    this.creator.create(type, this, this.n);
   }
 }

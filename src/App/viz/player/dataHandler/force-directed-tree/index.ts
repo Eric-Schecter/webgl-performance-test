@@ -2,10 +2,11 @@ import { TreeNodeData } from "./treenodedata";
 import { Hierarchy } from "./hierarchy";
 import { DataLink } from "./datalink";
 import { DataNode, MovealbeTreeNode, MovealbeLeafNode } from './datanode';
+import { DataHandler } from "../interface";
 
 export { DataNode, DataLink };
 
-export class Data {
+export class Data implements DataHandler {
   private _nodes: DataNode[] = [];
   private _links: DataLink[] = [];
   constructor(n: number, private layer = 7) {
@@ -49,10 +50,7 @@ export class Data {
     this._nodes = this.geneNodes(hierarchy.data);
     this._links = this.geneLinks(hierarchy.data);
   }
-  public get nodes() {
-    return this._nodes;
-  }
-  public get links() {
-    return this._links;
+  public get data() {
+    return { nodes: this._nodes.map(node => node.toJSON), links: this._links.map(link => link.toJSON) };
   }
 }
