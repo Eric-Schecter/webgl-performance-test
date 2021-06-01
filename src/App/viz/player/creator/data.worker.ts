@@ -6,30 +6,41 @@ import { DataHandler } from "../dataHandler";
 // eslint-disable-next-line no-restricted-globals
 const ctx = self as any;
 
-type DataHandlerConstructor = { new(count: number): DataHandler };
+type DataHandlerConstructor = { new(): DataHandler };
 
 class Handler {
   private map = new Map<string, DataHandler>();
+  private isLoading = false;
+  private preType = '';
   private table: { [prop: string]: DataHandlerConstructor } = {
     'force-directed-tree': DataFDT,
     'force-directed-graph': DataFDG,
     'disjoint-force-directed-graph': DataDFDG,
   }
-  private getFromExist = (type: string, count: number) => {
+  private getData = (type: string, count: number) => {
     const dataHandler = this.map.get(type) as DataHandler;
-    dataHandler.reset(count);
+    dataHandler.init(count);
+    this.isLoading = false;
     return dataHandler.data;
   }
-  private getFromCreated = (type: string, count: number) => {
+  private createConstructor = (type: string) => {
     const Data = this.table[type];
-    const dataHandler = new Data(count);
+    const dataHandler = new Data();
     this.map.set(type, dataHandler);
-    return dataHandler.data;
+  }
+  private cancel = () => {
+    this.map.delete(this.preType);
   }
   public getConstructor = (type: string, count: number) => {
-    return this.map.has(type)
-      ? this.getFromExist(type, count)
-      : this.getFromCreated(type, count);
+    if (this.isLoading) {
+      this.cancel();
+    }
+    this.isLoading = true;
+    this.preType = type;
+    if (!this.map.has(type)) {
+      this.createConstructor(type)
+    }
+    return this.getData(type, count);
   }
 }
 const handler = new Handler();

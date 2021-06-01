@@ -8,9 +8,6 @@ export { DataNode, DataLink };
 export class Data implements DataHandler {
   private _nodes: DataNode[] = [];
   private _links: DataLink[] = [];
-  constructor(n: number) {
-    this.reset(n);
-  }
   private generateNodes = (n: number) => {
     return new Array(n).fill(0).map((d, i) => {
       return { id: randomString(10), group: i === 0 ? 2 : 1 }
@@ -39,7 +36,7 @@ export class Data implements DataHandler {
     const links = nodesGroup.map(node => this.generateLinks(node)).flat();
     return { nodes, links };
   }
-  public reset = (n: number) => {
+  public init = (n: number) => {
     const data = this.generate(n);
     this._nodes = data.nodes.map((node, i) => new DataNode(node, i));
     this._links = data.links.map((link) => new DataLink(this._nodes, link));

@@ -3,7 +3,7 @@ import Worker from 'worker-loader!./data.worker';
 
 export class WorkerHandler {
   private worker: Worker;
-  private cb: any;
+  private cb = (data: any) => { };
   constructor() {
     this.worker = new Worker();
     this.register();

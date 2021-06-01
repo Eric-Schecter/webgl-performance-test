@@ -6,13 +6,11 @@ import { DataHandler } from "../interface";
 
 export { DataNode, DataLink };
 
-export class Data implements DataHandler{
+export class Data implements DataHandler {
   private _nodes: DataNode[] = [];
   private _links: DataLink[] = [];
   private gtemp = 1;
-  constructor(n: number, private g = 5) {
-    this.reset(n);
-  }
+  constructor(private g = 5) { }
   private geneLinkData = (node: Node, nodes: Node[], index: number) => {
     const countInGroup = nodes.length / this.g;
     const lowerIndex = ~~(index / countInGroup);
@@ -52,7 +50,7 @@ export class Data implements DataHandler{
     const links = this.geneLinksData(n, nodes)
     return { nodes, links };
   }
-  public reset = (n: number) => {
+  public init = (n: number) => {
     this.gtemp = 1;
     const data = this.generate(n);
     this._nodes = data.nodes.map((node, i) => new DataNode(node, i));
@@ -60,6 +58,6 @@ export class Data implements DataHandler{
     return this;
   }
   public get data() {
-    return { nodes: this._nodes.map(node=>node.toJSON), links: this._links.map(link=>link.toJSON) };
+    return { nodes: this._nodes.map(node => node.toJSON), links: this._links.map(link => link.toJSON) };
   }
 }

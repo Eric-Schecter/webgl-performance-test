@@ -9,9 +9,7 @@ export { DataNode, DataLink };
 export class Data implements DataHandler {
   private _nodes: DataNode[] = [];
   private _links: DataLink[] = [];
-  constructor(n: number, private layer = 7) {
-    this.reset(n);
-  }
+  constructor(private layer = 7) { }
   private geneLinks = (root: MovealbeTreeNode | MovealbeLeafNode) => {
     const links: DataLink[] = [];
     const queue: Array<MovealbeTreeNode | MovealbeLeafNode> = [root];
@@ -44,7 +42,7 @@ export class Data implements DataHandler {
     }
     return nodes;
   }
-  public reset = (n: number) => {
+  public init = (n: number) => {
     const data = new TreeNodeData(n, this.layer);
     const hierarchy = new Hierarchy(data);
     this._nodes = this.geneNodes(hierarchy.data);
