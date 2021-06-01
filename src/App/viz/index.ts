@@ -35,7 +35,7 @@ export class Viz {
     this.picker = new Picker(this.renderer, this.camera.instance, this.pickingScene);
     this.eventsHandler = new EventsHandler(canvas, this.picker, this.camera, this.player);
     this.stats = new MyStats(canvas);
-    new GUIHelper(canvas,this.player);
+    new GUIHelper(canvas, this.player);
     this.update();
   }
   private draw = (time: number) => {

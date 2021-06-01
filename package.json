@@ -40,6 +40,7 @@
     "@types/stats.js": "^0.17.0",
     "@types/three": "^0.126.2",
     "node-sass": "^4.14.1",
-    "react-app-rewired": "^2.1.8"
+    "react-app-rewired": "^2.1.8",
+    "worker-loader": "^3.0.8"
   }
 }

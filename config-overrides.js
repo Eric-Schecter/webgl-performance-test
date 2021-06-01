@@ -5,13 +5,15 @@ module.exports = function override(config, env) {
   const index = loaders.length - 2;
   loaders.splice(index, 0, {
     test: /\.(frag|vert|fragment|vertex|shader|glsl)$/,
-    use:[{
-      loader: path.resolve(__dirname,'./src/loaders/shader-loader/index.js'),
-      options:{
-        publicPath:'./src/shaderchunk',
+    use: [{
+      loader: path.resolve(__dirname, './src/loaders/shader-loader/index.js'),
+      options: {
+        publicPath: './src/shaderchunk',
       }
     }]
+  }, {
+    test: /\.worker\.ts$/,
+    use: { loader: 'worker-loader' },
   })
-
   return config;
 }

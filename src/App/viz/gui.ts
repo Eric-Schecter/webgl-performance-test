@@ -5,6 +5,9 @@ import { initCount } from '../../shared';
 export class GUIHelper {
   private timer?: ReturnType<typeof setTimeout>;
   constructor(canvas: HTMLCanvasElement, private player: Player) {
+    this.createGUI(canvas);
+  }
+  private createGUI = (canvas: HTMLCanvasElement) => {
     const gui = new GUI({ autoPlace: false });
     canvas.parentElement?.appendChild(gui.domElement);
     gui.domElement.style.position = 'absolute';
