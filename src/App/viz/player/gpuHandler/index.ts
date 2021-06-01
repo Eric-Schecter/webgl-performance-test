@@ -9,9 +9,8 @@ export class GPUHandler {
   private velocityVariable?: Variable;
   private velocityUniforms: { [uniform: string]: IUniform<Texture | number | null> } = {};
   private positionUniforms: { [uniform: string]: IUniform<Texture | number | Vector4 | null> } = {};
-  private is2d = true;
-  constructor(data: any, private renderer: WebGLRenderer, private uniforms: { [uniform: string]: IUniform<Texture> }) {
-    this.reset(data);
+  constructor(data: any, private renderer: WebGLRenderer, private uniforms: { [uniform: string]: IUniform<Texture> }, is2d: boolean) {
+    this.reset(data, is2d);
   }
   private setPosVariable = (nodes: any[], nodeWidth: number) => {
     const posTexture = new DataTexture(new Float32Array(nodeWidth ** 2 * 4).fill(-1), nodeWidth, nodeWidth, RGBAFormat, FloatType);
@@ -90,10 +89,9 @@ export class GPUHandler {
     (this.positionUniforms.pickedNode.value as Vector4).set(x, y, 0, i);
   }
   public updateView = (is2d: boolean) => {
-    this.is2d = is2d;
     this.velocityUniforms.is2d.value = is2d ? 1 : 0;
   }
-  public reset = (data: any) => {
+  public reset = (data: any, is2d: boolean) => {
     const { links, nodes } = data;
     const nodeWidth = getTextureSize(nodes.length);
     this.gpuCompute = new GPUComputationRenderer(nodeWidth, nodeWidth, this.renderer);
@@ -102,6 +100,6 @@ export class GPUHandler {
     this.setupGpgpu();
     this.setNodesData(nodes, nodeWidth);
     this.setLinksData(links);
-    this.updateView(this.is2d);
+    this.updateView(is2d);
   }
 }

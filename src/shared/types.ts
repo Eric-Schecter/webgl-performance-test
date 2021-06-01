@@ -15,5 +15,5 @@ export interface GPU {
   update: (time: number) => void;
   updatePoint: (i: number, x: number, y: number) => void;
   updateView: (is2d: boolean) => void;
-  reset: (data: any) => void;
+  reset: (data: any, is2d: boolean) => void;
 }
