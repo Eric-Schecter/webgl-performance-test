@@ -8,40 +8,15 @@ enum Click {
   RightClick = 2,
 }
 
-class ViewPort {
-  private startPosMouse = new Vector3();
-  private startPosCamera = new Vector3();
-  constructor(private mouse: Vector3, private camera: MyCamera) { }
-  public start = () => {
-    this.startPosMouse.copy(this.mouse);
-    this.startPosCamera.copy(this.camera.instance.position);
-  }
-  public update = () => {
-    const p = new Vector3().copy(this.mouse).sub(this.startPosMouse).multiplyScalar(-1);
-    p.y = -p.y;
-    p.z = 0;
-    this.camera.instance.position.copy(new Vector3().copy(this.startPosCamera).add(p));
-    const { x, y } = this.camera.instance.position;
-    this.camera.control.target.set(x, y, 0);
-  }
-  public end = () => {
-    this.startPosMouse.set(-10000, -10000, 0);
-    this.startPosCamera.set(-10000, -10000, 0);
-  }
-}
-
 export class EventsHandler {
   private _mouse = new Vector3();
-  private viewport: ViewPort;
   constructor(private canvas: HTMLCanvasElement, private picker: Picker,
     private camera: MyCamera, private player: Player) {
-    this.viewport = new ViewPort(this._mouse, camera);
     this.init();
     this.register();
   }
   private init = () => {
     this._mouse.set(-10000, -10000, 0);
-    this.viewport.end();
   }
   private move = (x: number, y: number) => {
     this._mouse.x = x;
@@ -52,11 +27,7 @@ export class EventsHandler {
     const { clientX, clientY } = e;
     this._mouse.x = clientX;
     this._mouse.y = clientY;
-    if (e.button === Click.LeftClick) {
-      this.leftdown();
-    } else if (e.button === Click.RightClick) {
-      this.rightdown();
-    }
+    this.leftdown();
   }
   private touchdown = (e: TouchEvent) => {
     const { clientX, clientY } = e.touches[0];
@@ -70,12 +41,6 @@ export class EventsHandler {
   private touchmove = (e: TouchEvent) => {
     const { clientX, clientY } = e.touches[0];
     this.move(clientX, clientY)
-  }
-  private rightdown = () => {
-    this.viewport.start();
-    window.addEventListener('pointermove', this.moveviewport);
-    window.addEventListener('pointerup', this.up);
-    //todo: add touchmove event
   }
   private leftdown = () => {
     const res = this.picker.pick(this._mouse);
@@ -104,7 +69,6 @@ export class EventsHandler {
   }
   private moveviewport = ({ clientX, clientY }: MouseEvent) => {
     this.move(clientX, clientY);
-    this.viewport.update();
   }
   private contextmenu = (e: MouseEvent) => {
     if (e.button === Click.RightClick) {
